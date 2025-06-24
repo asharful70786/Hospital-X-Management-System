@@ -1,8 +1,43 @@
 import OTP from "../Models/otpModel.js";
+import Session from "../Models/sessionModel.js";
 import User from "../Models/userModel.js";
 import sendMail from "../services/sendMailServices.js";
 import bcrypt from "bcrypt";
 
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+export const login = async (req, res) => {
+  const { sid } = req.signedCookies;
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ message: "Email and password are required" });
+  if (!emailRegex.test(email)) return res.status(400).json({ message: "Invalid email format" });
+  try {
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User not found , please register" });
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) return res.status(400).json({ message: "Invalid credentials" });
+
+    const allSessions = await Session.find({ userId: user._id }).sort({ createdAt: 1 });
+    if (allSessions.length >= 2) {
+      const oldestSession = allSessions[0];
+      await Session.deleteOne({ _id: oldestSession._id });
+    }
+    const session = await Session.create({ userId: user._id });
+    res.cookie("sid", session._id.toString(), {
+      httpOnly: true,
+      signed: true,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+    });
+    return res.status(200).json({ message: "Login successful" });
+  } catch (error) {
+    console.log("error in login", error);
+    res.status(500).json({ error: error.message });
+  }
+}
 
 export const SendOtp = async (req, res) => {
   //will add zod validation here 
@@ -109,3 +144,16 @@ export const forgetPAssResetAPss = async (req, res) => {
     res.status(500).json({ message: "Failed to reset password" });
   }
 }
+
+export const currentUser = async (req, res) => {
+  const user = req.user;
+  try {
+    res.status(200).json(user);
+  } catch (error) {
+    console.log("error in current user", error);
+    res.status(500).json({ error: error.message });
+  }
+
+};
+
+
