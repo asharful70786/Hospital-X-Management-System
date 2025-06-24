@@ -1,0 +1,31 @@
+authRoute (Authentication & Authorization Related)
+Purpose: Handles anything related to authentication (login, register, OTP, logout, refresh tokens, etc.)
+ -------------------------------------------------------------------------
+| Feature                 | Description                                  |
+| ----------------------- | -------------------------------------------- |
+| `POST /login`           | User login (email/phone + password/OTP)      |
+| `POST /register`        | New user registration                        |
+| `POST /verify-otp`      | OTP verification for login/signup            |
+| `POST /forgot-password` | Initiate password reset                      |
+| `POST /reset-password`  | Reset password after OTP                     |
+| `GET /me`               | Return currently logged-in user (uses token) |
+| `GET /logout`           | Destroy token/session                        |
+| `POST /refresh-token`   | Get a new access token via refresh token     |
+--------------------------------------------------------------------------
+
+ userRoute (User Profile & Management)
+Purpose: Handles user-related CRUD and profile settings after login.
+
+----------------------------------------------------------------
+| Feature           | Description                              |
+| ----------------- | ---------------------------------------- |
+| `GET /:id`        | Get single user profile by ID            |
+| `GET /`           | List all users (only for Admins usually) |
+| `PUT /:id`        | Update profile info (name, avatar, etc.) |
+| `PATCH /:id/role` | Change role (Admin action)               |
+| `DELETE /:id`     | Soft-delete or ban a user (Admin action) |
+----------------------------------------------------------------
+
+rate-limit {
+   for max req ar log and regsiter router protected safec fromm dedosd attack 
+}

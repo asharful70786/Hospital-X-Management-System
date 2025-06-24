@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function sendMail(email) {
+async function sendMail(email, msgType = "register") {
   const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
   const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
 
@@ -21,12 +21,26 @@ async function sendMail(email) {
     { upsert: true, new: true }
   );
 
+  let subject = "";
+  let messageHeading = "";
+
+  if (msgType === "register") {
+    subject = "Your OTP for Hospital X Registration";
+    messageHeading = "Complete Your Registration";
+  } else if (msgType === "forgot") {
+    subject = "Reset Password OTP - Hospital X";
+    messageHeading = "Reset Your Password";
+  } else {
+    subject = "Your OTP from Hospital X";
+    messageHeading = "Authentication Code";
+  }
+
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 40px;">
       <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden;">
         <div style="background-color: #4f46e5; padding: 20px; color: #ffffff; text-align: center;">
           <h2 style="margin: 0;">Hospital X</h2>
-          <p style="margin: 5px 0;">Secure Login Verification</p>
+          <p style="margin: 5px 0;">${messageHeading}</p>
         </div>
         <div style="padding: 30px; text-align: center;">
           <h3 style="margin-bottom: 10px;">Your OTP Code</h3>
@@ -36,7 +50,7 @@ async function sendMail(email) {
           <p style="color: #555;">This OTP is valid for the next <strong>10 minutes</strong>. Please do not share it with anyone.</p>
         </div>
         <div style="background-color: #f3f4f6; padding: 20px; text-align: center; font-size: 12px; color: #888;">
-          <p>Didn’t request this email? You can ignore it.</p>
+          <p>If you didn’t request this, you can ignore this email.</p>
           <p>© ${new Date().getFullYear()} Hospital X. All rights reserved.</p>
         </div>
       </div>
@@ -46,7 +60,7 @@ async function sendMail(email) {
   await transporter.sendMail({
     from: '"Hospital X" <ashrafulmomin2@gmail.com>',
     to: email,
-    subject: "Your OTP for Hospital X Login",
+    subject,
     html: htmlContent,
   });
 }
