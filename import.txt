@@ -27,5 +27,5 @@ Purpose: Handles user-related CRUD and profile settings after login.
 ----------------------------------------------------------------
 
 rate-limit {
-   for max req ar log and regsiter router protected safec fromm dedosd attack 
+   for max req ar log and register router protected safe fromm dedosd attack 
 }

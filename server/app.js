@@ -4,7 +4,6 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoute from "./Routers/authRoutes.js";
 import userRoute from "./Routers/userRoutes.js";
-import sendMail from "./services/sendMailServices.js";
 import cookieParser from "cookie-parser";
 
 
@@ -27,9 +26,8 @@ app.get("/", async (req, res) => {
   res.send("server is running");
 });
 
-app.use("/auth", authRoute); // user profile related (get , update , delete)
-app.use("/api", userRoute); //auth related  (login/ register , logout , otp )
-
+app.use("/auth", authRoute); //auth related  (login/ register , logout , otp )
+app.use("/api", userRoute); // user profile related (get , update , delete)
 
 
 
