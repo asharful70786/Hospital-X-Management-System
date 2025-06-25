@@ -1,7 +1,10 @@
 import express from "express";
 import checkAuth from "../middleWare/checkAuthMiddleWare.js";
-import LabReport from "../Models/LabReport.js";
 import { addlabReport, deleteLabReport, getAllLabReports, patientLabReportAccess, updateLabReport } from "../controllers/labReportControllers.js";
+import upload from "../middleWare/multerMiddleware.js";
+
+
+
 const router = express.Router();
 
 
@@ -12,7 +15,7 @@ router.get("/all", checkAuth, getAllLabReports);
 // condition apply  soon 
 router.get("/single/:id", checkAuth, patientLabReportAccess);
 
-router.post("/add", checkAuth, addlabReport);
+router.post("/add", checkAuth, upload.single("file"), addlabReport);
 
 
 router.patch("/update/:id", checkAuth, updateLabReport);

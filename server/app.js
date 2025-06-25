@@ -15,6 +15,8 @@ import recordRoute from "./Routers/recordRoutes.js";
 import staffRoute from "./Routers/staffRoutes.js";
 import departMentRoute from "./Routers/departmentRoutes.js";
 import cookieParser from "cookie-parser";
+import upload from "./middleWare/multerMiddleware.js";
+import { uploadImage } from "./services/cloudinaryServices.js";
 
 
 await connectDB();
@@ -31,23 +33,30 @@ app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET_KEy))
 
 
-app.get("/", async (req, res) => {
-
-  res.send("server is running");
+app.post("/multer", upload.single("file"), async (req, res) => {
+  try {
+    const result = await uploadImage(req.file);
+    res.json({ message: "Upload successful", url: result.secure_url });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.use("/auth", authRoute);
-app.use("/user", userRoute);
-app.use("/inventory", inventoryRoute);
-app.use("/medicine", medicineRoute);
-app.use("/report", labReportRoute);
-app.use("/bed", bedRoute)
-app.use("/appointment", appointmentRoute);
-app.use("/department", departMentRoute);
-app.use("/records", recordRoute);
-app.use("/staff", staffRoute)
-app.use("/bills", billRoutes); //Bill related i too  help chatGpt , cause i dont know aggregate in mongodb , but soon  i will learn it 
-app.use("/prescriptions", prescriptionRoutes);
+
+
+// app.use("/auth", authRoute);
+// app.use("/user", userRoute);
+// app.use("/inventory", inventoryRoute);
+// app.use("/medicine", medicineRoute);
+// app.use("/report", labReportRoute);
+// app.use("/bed", bedRoute)
+// app.use("/appointment", appointmentRoute);
+// app.use("/department", departMentRoute);
+// app.use("/records", recordRoute);
+// app.use("/staff", staffRoute)
+// app.use("/bills", billRoutes); //Bill related i too  help chatGpt , cause i dont know aggregate in mongodb , but soon  i will learn it 
+// app.use("/prescriptions", prescriptionRoutes);
 
 
 

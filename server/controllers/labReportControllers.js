@@ -1,4 +1,5 @@
 import LabReport from "../Models/LabReport.js";
+import { uploadImage } from "../services/cloudinaryServices.js";
 
 export const getAllLabReports = async (req, res) => {
   try {
@@ -21,18 +22,34 @@ export const patientLabReportAccess = async (req, res) => {
   }
 }
 
-//only bny receptionist
+//only by receptionist
 export const addlabReport = async (req, res) => {
+  const { patient, doctor, testType, status, notes } = req.body;
   try {
-    const newItem = new LabReport(req.body);
-    await newItem.save();
-    //i can add send mobile  or email sms  after the lapreport is Complete
-    //using twilio api or nodemailer api
-    return res.status(201).json({ message: "Item added successfully" });
+    if (!patient || !doctor || !testType || !status || !notes) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    let imageUrl = "";
+    if (req.file) {
+      const result = await uploadImage(req.file);
+      imageUrl = result.secure_url;
+    }
+    if (status === "completed" && !req.file) {
+      return res.status(400).json({ message: "Result file required for completed reports" });
+    }
+
+    const newReport = new LabReport({
+      patient, doctor, testType, status, resultUrl: imageUrl, notes,
+    });
+
+    await newReport.save();
+
+    return res.status(201).json({ message: "Lab report created", report: newReport });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ message: "Upload failed", error: error.message });
   }
-}
+};
+
 
 
 //by super admin
