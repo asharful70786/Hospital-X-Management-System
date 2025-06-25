@@ -1,94 +1,42 @@
 import express from "express";
-// import Appointment from "../Models/Appointment.js";
 import checkAuth from "../middleWare/checkAuthMiddleWare.js";
-import Appointment from "../Models/Appointment.js";
+import { getAllAppointments, getAllAppointmentsByPatientId, getSingleAppointment, makeAppointment, updateAppointment } from "../controllers/appointmentController.js";
 
 const router = express.Router();
 
 //http://localhost:4000/appointment/...
 
-//acces by admin / super admin / doctor / nurse / receptionist  
-router.get("/", checkAuth, async (req, res) => {
-  try {
-    const appointments = await Appointment.find()
-      .populate("doctor", "name email")
-      .populate("patient", "name email");;
-    res.json(appointments);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+async function bySuperAdmin(req, res, next) {
+  const user = req.user;
+  if (user.role === "superAdmin" || user.role === "admin" || user.role === "receptionist") {
+    return next();
   }
-});
+  else {
+    return res.status(403).json({ message: "You are not authorized to see the Contents of this page" });
+  }
+}
+
+router.get("/", checkAuth, bySuperAdmin, getAllAppointments);
 
 
 //opnly view by receptionist / patient / receptionist
-router.get("/single/:id", checkAuth, async (req, res) => {
-  try {
-    const appointment = await Appointment.findById(req.params.id);
-    res.json(appointment);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-})
+router.get("/single/:id", checkAuth, getSingleAppointment)
 
-//acces by superADmin  / receptionist / and patient 
-router.post("/add", checkAuth, async (req, res) => {
-  try {
-    const newItem = new Appointment(req.body);
-    await newItem.save();
-    return res.status(201).json({ message: "Item added successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
-router.patch("/update/:id", checkAuth, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updatedItem = await Appointment.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.json(updatedItem);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.post("/add", checkAuth, makeAppointment);
+
+router.patch("/update/:id", checkAuth, updateAppointment);
 
 
 // GET appointments by patient ID
-router.get("/by-patient/:id", checkAuth, async (req, res) => {
-  try {
-    const appointments = await Appointment.find({ patient: req.params.id })
-      .populate("doctor", "name email")
-      .sort({ date: 1, time: 1 }); // optional: sort by upcoming
-    res.json(appointments);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.get("/by-patient/:id", checkAuth, getAllAppointmentsByPatientId);
 
 // GET appointments by doctor ID
-router.get("/by-doctor/:id", checkAuth, async (req, res) => {
-  try {
-    const appointments = await Appointment.find({ doctor: req.params.id })
-      .populate("patient", "name email")
-      .sort({ date: 1, time: 1 });
-    res.json(appointments);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.get("/by-doctor/:id", checkAuth,);
 
 
 //access by admin / super admin 
-router.delete("/delete/:id", checkAuth, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedItem = await Appointment.findByIdAndDelete(id);
-    res.json(deletedItem);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.delete("/delete/:id", checkAuth,);
 
 
 export default router;

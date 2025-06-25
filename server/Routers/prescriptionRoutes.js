@@ -1,77 +1,29 @@
 import express from "express";
-import Prescription from "../Models/Prescription.js";
+import { addNewPrescription, deleteprescription, getAllPrescriptions, getPrescriptionsByDoctorId, getPrescriptionsByPatientId, updatePrescription } from "../controllers/prescriptionController.js";
+import checkAuth from "../middleWare/checkAuthMiddleWare.js";
+
+
 
 //http://localhost:4000/prescriptions/...
 
 const router = express.Router();
 
 // Get all prescriptions with doctor & patient populated
-router.get("/", async (req, res) => {
-  try {
-    const prescriptions = await Prescription.find()
-      .populate("patient", "name email")
-      .populate("doctor", "name email");
-    res.json(prescriptions);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.get("/", checkAuth, getAllPrescriptions);
 
 // Get prescriptions by patient ID
-router.get("/by-patient/:id", async (req, res) => {
-  try {
-    const prescriptions = await Prescription.find({ patient: req.params.id })
-      .populate("doctor", "name email");
-    res.json(prescriptions);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.get("/by-patient/:id", checkAuth, getPrescriptionsByPatientId);
 
 // Get prescriptions by doctor ID
-router.get("/by-doctor/:id", async (req, res) => {
-  try {
-    const prescriptions = await Prescription.find({ doctor: req.params.id })
-      .populate("patient", "name email");
-    res.json(prescriptions);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.get("/by-doctor/:id", checkAuth, getPrescriptionsByDoctorId);
 
 // Add new prescription
-router.post("/add", async (req, res) => {
-  try {
-    const newItem = new Prescription(req.body);
-    await newItem.save();
-    return res.status(201).json({ message: "Prescription added successfully" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.post("/add", checkAuth, addNewPrescription);
 
 // Update prescription
-router.patch("/update/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updatedItem = await Prescription.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.json(updatedItem);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.patch("/update/:id", checkAuth, updatePrescription);
 
 // Delete prescription (only by SuperAdmin later)
-router.delete("/delete/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedItem = await Prescription.findByIdAndDelete(id);
-    res.json(deletedItem);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.delete("/delete/:id", checkAuth, deleteprescription);
 
 export default router;
