@@ -37,7 +37,7 @@ app.get("/", async (req, res) => {
 });
 
 app.use("/auth", authRoute);
-app.use("/api", userRoute);
+app.use("/user", userRoute);
 app.use("/inventory", inventoryRoute);
 app.use("/medicine", medicineRoute);
 app.use("/report", labReportRoute);
