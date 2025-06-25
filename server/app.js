@@ -25,7 +25,7 @@ const app = express();
 dotenv.config();
 
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "http://127.0.0.1:5500",
   credentials: true
 }));
 
@@ -45,18 +45,18 @@ app.post("/multer", upload.single("file"), async (req, res) => {
 
 
 
-// app.use("/auth", authRoute);
-// app.use("/user", userRoute);
-// app.use("/inventory", inventoryRoute);
-// app.use("/medicine", medicineRoute);
-// app.use("/report", labReportRoute);
-// app.use("/bed", bedRoute)
-// app.use("/appointment", appointmentRoute);
-// app.use("/department", departMentRoute);
-// app.use("/records", recordRoute);
-// app.use("/staff", staffRoute)
-// app.use("/bills", billRoutes); //Bill related i too  help chatGpt , cause i dont know aggregate in mongodb , but soon  i will learn it 
-// app.use("/prescriptions", prescriptionRoutes);
+app.use("/auth", authRoute);
+app.use("/user", userRoute);
+app.use("/inventory", inventoryRoute);
+app.use("/medicine", medicineRoute);
+app.use("/report", labReportRoute);
+app.use("/bed", bedRoute)
+app.use("/appointment", appointmentRoute);
+app.use("/department", departMentRoute);
+app.use("/records", recordRoute);
+app.use("/staff", staffRoute)
+app.use("/bills", billRoutes); //Bill related i too  help chatGpt , cause i dont know aggregate in mongodb , but soon  i will learn it 
+app.use("/prescriptions", prescriptionRoutes);
 
 
 

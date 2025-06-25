@@ -12,7 +12,7 @@ const labReportSchema = new mongoose.Schema({
   },
   testType: String,
   status: {
-    type: String, enum: ["Pending", "InProgress", "Completed"],
+    type: String, enum: ["Pending", "Completed"],
     default: "Pending"
   },
   resultUrl: String,
