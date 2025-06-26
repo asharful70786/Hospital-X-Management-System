@@ -15,6 +15,8 @@ async function checkAuth(req, res, next) {
   }
 
   req.user = session.userId;
+  req.user.role = session.userId.role
+  console.log(req.user.role)
   next()
 
 }

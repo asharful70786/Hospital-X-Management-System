@@ -20,7 +20,7 @@ router.post("/forgot-password/send-otp", limiter, forgetPassSendOtp);
 router.post("/forgot-password/verify-otp", forgetPAssVerifyOtp);
 router.post("/forgot-password/reset-password", forgetPAssResetAPss);
 
-router.post("/login", limiter, login)
+router.post("/login", login)
 router.post("/current-user", checkAuth, currentUser);
 
 

@@ -10,6 +10,7 @@ const DoctorLeaveSchema = new mongoose.Schema({
   date: {
     type: Date,
     required: true,
+    default: Date.now // for now as testing
   },
   reason: {
     type: String,
@@ -19,8 +20,8 @@ const DoctorLeaveSchema = new mongoose.Schema({
     type: Boolean,
     default: true, // if false,  can add fromTime and toTime
   },
-  fromTime: String, 
-  toTime: String,   
+  fromTime: String,
+  toTime: String,
 }, { timestamps: true });
 
 const DoctorLeave = mongoose.model("DoctorLeave", DoctorLeaveSchema);

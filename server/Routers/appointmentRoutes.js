@@ -1,5 +1,7 @@
 import express from "express";
 import checkAuth from "../middleWare/checkAuthMiddleWare.js";
+import role from "../utils/roles.js";
+import allow from "../middleWare/accessAllow.js";
 import {
   bookAppointment,
   getAllAppointments,
@@ -15,18 +17,12 @@ import {
 
 const router = express.Router();
 
-// Middleware: allow superAdmin/admin/receptionist only
-const bySuperAdmin = async (req, res, next) => {
-  const user = req.user;
-  if (["superAdmin", "admin", "receptionist"].includes(user.role)) return next();
-  return res.status(403).json({ message: "You are not authorized to access this route." });
-};
 
-//  GET all appointments (admin/receptionist access)
-router.get("/", checkAuth, bySuperAdmin, getAllAppointments);
+//   Only Admin and Receptionist can see the full appointment list
+router.get("/", checkAuth, allow(role.Admin, role.Receptionist), getAllAppointments);
 
 //  GET a single appointment by ID
-router.get("/single/:id", checkAuth, getSingleAppointment);
+router.get("/single/:id", checkAuth, allow(role.Admin, role.Receptionist), getSingleAppointment);
 
 //  POST create a new appointment (admin/receptionist)
 router.post("/add", checkAuth, makeAppointment);
@@ -35,7 +31,7 @@ router.post("/add", checkAuth, makeAppointment);
 router.patch("/update/:id", checkAuth, updateAppointment);
 
 //  DELETE appointment (admin-level access)
-router.delete("/delete/:id", checkAuth, bySuperAdmin, deleteAppointment);
+router.delete("/delete/:id", checkAuth, deleteAppointment);
 
 //  GET appointments by patient
 router.get("/by-patient/:id", checkAuth, getAllAppointmentsByPatientId);

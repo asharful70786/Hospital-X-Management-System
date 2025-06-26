@@ -11,7 +11,7 @@ const staffSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["Doctor", "Nurse", "Receptionist", "LabTech", "Pharmacist", "Admin"],
+    enum: ["Doctor", "Nurse", "Receptionist", "LabTech", "Pharmacist", "Admin" , "SuperAdmin"],
     required: true
   },
   joinedAt: { type: Date, default: Date.now },

@@ -9,7 +9,6 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
 export const login = async (req, res) => {
-  const { sid } = req.signedCookies;
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ message: "Email and password are required" });
   if (!emailRegex.test(email)) return res.status(400).json({ message: "Invalid email format" });
