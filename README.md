@@ -105,7 +105,7 @@ Patient receives an HTML email with:
 ---
 
 ## 📦 Route Map
-
+ -------------------------------------------------------------
 | Endpoint         | Description                              |
 |------------------|------------------------------------------|
 | `/auth`          | OTP login/register                       |
@@ -120,19 +120,21 @@ Patient receives an HTML email with:
 | `/report`        | Report upload + email                    |
 | `/bed`           | Bed assignment/tracking                  |
 | `/bills`         | Bill generation                          |
+ -------------------------------------------------------------
 
----
 
 ## 🔒 Role Access Summary
-
-| Role       | Access                                      |
-|------------|---------------------------------------------|
+-------------------------------------------------------------
+| Role         | Access                                      |
+|------------  |---------------------------------------------|
 | **Admin**      | Manage all modules                       |
 | **Doctor**     | Appointments, Prescriptions, EHR         |
 | **Nurse**      | Bed status, limited record access        |
 | **LabTech**    | Upload lab reports                       |
 | **Pharmacist** | Manage medicines and prescriptions       |
 | **Patient**    | Book/view appointments, view reports     |
+|**SuperAdmin**  | For Everything Allowed (Owner)           |
+-------------------------------------------------------------
 
 ---
 
