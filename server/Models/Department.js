@@ -8,7 +8,8 @@ const departmentSchema = new mongoose.Schema({
   description: String,
   head: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
+    required: true,
   }
 });
 

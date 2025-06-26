@@ -45,6 +45,7 @@ export const getPrescriptionsByDoctorId = async (req, res) => {
 }
 
 export const updatePrescription = async (req, res) => {
+  
   try {
     const { id } = req.params;
     const updatedItem = await Prescription.findByIdAndUpdate(id, req.body, {

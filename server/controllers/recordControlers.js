@@ -1,3 +1,4 @@
+import e from "express";
 import PatientRecord from "../Models/PatientRecord.js";
 
 export const getAllRecords = async (req, res) => {
@@ -57,16 +58,31 @@ export const addNewPatientRecord = async (req, res) => {
 }
 
 export const updatePatientRecord = async (req, res) => {
+  const { id } = req.params;
   try {
-    const updated = await PatientRecord.findByIdAndUpdate(req.params.id, req.body, {
+    let record = await PatientRecord.findById(id);
+
+    if (!record)
+      return res.status(404).json({ error: "Record not found" });
+
+    // Only the doctor who created this can update
+    if (req.user.role === 'Doctor') {
+      if (!record.doctor.equals(req.user._id)) {
+        return res.status(403).json({
+          error: "Access denied: You can only update your own records."
+        });
+      }
+    }
+    await PatientRecord.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    if (!updated) return res.status(404).json({ message: "Record not found" });
-    res.json(updated);
+    res.status(200).json(`Record updated successfully`);
   } catch (error) {
+    console.error(`Error in updating patient record: ${error.message}`);
     res.status(500).json({ error: error.message });
   }
-}
+};
+
 
 //super admin     
 export const deletePatientRecord = async (req, res) => {

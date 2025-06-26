@@ -37,18 +37,31 @@ export const addNewDepartment = async (req, res) => {
 
 
 //by super admin / admin / receptionist
-export const updateDepartmentDetails  = async (req, res) => {
+export const updateDepartmentDetails = async (req, res) => {
+  const { id } = req.params;
   try {
-    const updated = await Department.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    }).populate("head", "name email role");
+    const department = await Department.findById(id);
+    if (!department) {
+      return res.status(404).json({ message: "Department not found" });
+    }
 
-    if (!updated) return res.status(404).json({ message: "Department not found" });
+    if (req.user.role === 'Doctor') {
+      if (!department.head.equals(req.user._id)) {
+        return res.status(403).json({ message: "Only head doctor can update this department" });
+      }
+    }
+
+    const updated = await Department.findByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    ).populate("head", "name email role");
+
     res.json(updated);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 //only will be delete by super admin ~ carefully  risky
 export const deleteDepertment = async (req, res) => {

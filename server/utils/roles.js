@@ -8,8 +8,11 @@ const role = Object.freeze({
   Doctor: "Doctor",
   Nurse: "Nurse",
   Patient: "Patient"
-})
+});
 
 
 
 export default role;
+
+
+

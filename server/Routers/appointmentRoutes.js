@@ -25,27 +25,27 @@ router.get("/", checkAuth, allow(role.Admin, role.Receptionist), getAllAppointme
 router.get("/single/:id", checkAuth, allow(role.Admin, role.Receptionist), getSingleAppointment);
 
 //  POST create a new appointment (admin/receptionist)
-router.post("/add", checkAuth, makeAppointment);
+router.post("/add", checkAuth, allow(role.Admin, role.Receptionist), makeAppointment);
 
 //  PATCH update appointment
-router.patch("/update/:id", checkAuth, updateAppointment);
+router.patch("/update/:id", checkAuth, allow(role.Admin, role.Receptionist), updateAppointment);
 
 //  DELETE appointment (admin-level access)
-router.delete("/delete/:id", checkAuth, deleteAppointment);
+router.delete("/delete/:id", checkAuth, allow(role.Admin, role.Receptionist), deleteAppointment);
 
 //  GET appointments by patient
-router.get("/by-patient/:id", checkAuth, getAllAppointmentsByPatientId);
+router.get("/by-patient/:id", checkAuth, allow(role.Admin, role.Receptionist, role.Patient), getAllAppointmentsByPatientId);
 
 //  GET appointments by doctor ID
-router.get("/by-doctor/:id", checkAuth, getAppointmentsByDoctorId);
+router.get("/by-doctor/:id", checkAuth, allow(role.Doctor), getAppointmentsByDoctorId);
 
 //  POST book appointment (with slot + leave validation)
-router.post("/book", checkAuth, bookAppointment);
+router.post("/book", checkAuth, allow(role.Patient), bookAppointment);
 
 //  GET all appointments for logged-in doctor (dashboard view)
-router.get("/doctor", checkAuth, getDoctorAppointments);
+router.get("/doctor", checkAuth, allow(role.Doctor), getDoctorAppointments);
 
-//  GET available time slots for a doctor on a specific date
-router.get("/available-slots/:id", checkAuth, getAvailableSlotsByDoctor);
+//  GET available time slots for a doctor on a specific date - holiday Time for Doctor 
+router.get("/available-slots/:id", checkAuth, allow(role.Doctor), getAvailableSlotsByDoctor);
 
 export default router;

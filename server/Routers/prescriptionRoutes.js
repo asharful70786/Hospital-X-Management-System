@@ -1,29 +1,50 @@
 import express from "express";
-import { addNewPrescription, deleteprescription, getAllPrescriptions, getPrescriptionsByDoctorId, getPrescriptionsByPatientId, updatePrescription } from "../controllers/prescriptionController.js";
+import allow from "../middleWare/accessAllow.js";
+import role from "../utils/roles.js";
+import {
+  addNewPrescription,
+  deleteprescription,
+  getAllPrescriptions,
+  getPrescriptionsByDoctorId,
+  getPrescriptionsByPatientId,
+  updatePrescription
+} from "../controllers/prescriptionController.js";
+
 import checkAuth from "../middleWare/checkAuthMiddleWare.js";
-
-
-
-//http://localhost:4000/prescriptions/...
 
 const router = express.Router();
 
-// Get all prescriptions with doctor & patient populated
-router.get("/", checkAuth, getAllPrescriptions);
+// GET all prescriptions — Admin, Receptionist, Doctor
+router.get("/all", checkAuth,
+  allow(role.Admin, role.Receptionist, role.Doctor),
+  getAllPrescriptions
+);
 
-// Get prescriptions by patient ID
-router.get("/by-patient/:id", checkAuth, getPrescriptionsByPatientId);
+// GET prescriptions by patient ID — Doctor, Patient, Nurse
+router.get("/by-patient/:id", checkAuth,
+  allow(role.Doctor, role.Patient, role.Nurse),
+  getPrescriptionsByPatientId
+);
 
-// Get prescriptions by doctor ID
-router.get("/by-doctor/:id", checkAuth, getPrescriptionsByDoctorId);
 
-// Add new prescription
-router.post("/add", checkAuth, addNewPrescription);
+router.get("/by-doctor/:id", checkAuth,
+  allow(role.Doctor, role.Admin),
+  getPrescriptionsByDoctorId
+);
 
-// Update prescription
-router.patch("/update/:id", checkAuth, updatePrescription);
+// POST add prescription — Doctor only
+router.post("/add", checkAuth, allow(role.Doctor), addNewPrescription);
 
-// Delete prescription (only by SuperAdmin later)
-router.delete("/delete/:id", checkAuth, deleteprescription);
+// PATCH update prescription — Doctor only
+router.patch("/update/:id", checkAuth,
+  allow(role.Doctor),
+  updatePrescription
+);
+
+// DELETE prescription — SuperAdmin only
+router.delete("/delete/:id", checkAuth,
+  allow(role.SuperAdmin),
+  deleteprescription
+);
 
 export default router;

@@ -3,6 +3,7 @@ import DoctorLeave from "../Models/DoctorLeave.js";
 import DoctorAvailability from "../Models/doctorAvailability.js";
 
 // Get all appointments (Admin, Doctor, Receptionist, etc.)
+
 export const getAllAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.find()

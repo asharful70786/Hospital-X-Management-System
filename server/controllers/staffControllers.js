@@ -1,3 +1,4 @@
+import Department from "../Models/Department.js";
 import Staff from "../Models/staff.js";
 
 
@@ -24,15 +25,44 @@ export const getActiveStaff = async (req, res) => {
 }
 
 export const getUserByRole = async (req, res) => {
+  const { role: targetRole } = req.params;
+  const currentUser = req.user;
+
   try {
-    const staffList = await Staff.find({ role: req.params.role, isActive: true })
-      .populate("user", "name email")
-      .populate("department", "name");
-    res.json(staffList);
+    // Admin & Receptionist have full access
+    if (["Admin", "Receptionist"].includes(currentUser.role)) {
+      const staffList = await Staff.find({ role: targetRole, isActive: true })
+        .populate("user", "name email")
+        .populate("department", "name");
+      return res.json(staffList);
+    }
+    // Doctor: Allow only if department head
+    if (currentUser.role === "Doctor") {
+      const department = await Department.findOne({ head: currentUser._id });
+
+      if (!department) {
+        return res.status(403).json({ message: "Access denied: Not a department head" });
+      }
+      // Limit staff list to same department only
+      const staffList = await Staff.find({
+        role: targetRole,
+        department: department._id,
+        isActive: true
+      })
+        .populate("user", "name email")
+        .populate("department", "name");
+
+      return res.json(staffList);
+    }
+
+    // Other roles — deny access
+    return res.status(403).json({ message: "Access denied" });
+
   } catch (error) {
+    console.error("Error in getUserByRole:", error.message);
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 export const getUsersByDepartmentId = async (req, res) => {
   try {
@@ -77,50 +107,71 @@ export const updateStaffDetails = async (req, res) => {
 }
 
 export const markStaffInActive = async (req, res) => {
+  const currentUser = req.user;
+  const { id } = req.params;
   try {
-    const staff = await Staff.findByIdAndUpdate(
-      req.params.id,
-      { isActive: false, leftAt: new Date() },
-      { new: true }
+    const staff = await Staff.findById(id).populate("department");
+    if (!staff) {
+      return res.status(404).json({ message: "Staff not found" });
+    }
+    // Only run  if current user is a Doctor &&  head of the department
+    if (currentUser.role === "Doctor") {
+      const department = await Department.findById(staff.department._id);
+      if (!department || department.head.toString() !== currentUser._id.toString()) {
+        return res.status(403).json({
+          message: "Access denied: Only department head can remove staff from this department"
+        });
+      }
+    }
+    const updatedStaff = await Staff.findByIdAndUpdate(
+      id, {
+      isActive: false,
+      leftAt: new Date()
+    }, { new: true }
     );
+    await User.findByIdAndUpdate(updatedStaff.user, { isActive: false });
+    return res.json({ message: "Staff removed successfully", staff: updatedStaff });
 
-    //Sync: Update User isActive
-    // or we can apply soft delete  
-    // await User.findByIdAndUpdate(staff.user, { isActive: false });
-
-    res.json({ message: "Staff removed successfully", staff });
   } catch (error) {
+    console.error("Error in markStaffInActive:", error.message);
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 export const AddStaff = async (req, res) => {
   const { userId, role, department, notes } = req.body;
+  const currentUser = req.user;
 
   try {
+    //  if already active staff
     const staffExists = await Staff.findOne({ user: userId, isActive: true });
     if (staffExists) {
       return res.status(400).json({ message: "User is already an active staff" });
     }
-
+    // If current user is Doctor  &&  head of the department
+    if (currentUser.role === "Doctor") {
+      const dept = await Department.findById(department);
+      if (!dept || dept.head.toString() !== currentUser._id.toString()) {
+        return res.status(403).json({
+          message: "Access denied: Only department head can assign staff to this department"
+        });
+      }
+    }
+    // Save staff
     const newStaff = new Staff({
       user: userId,
       role,
       department,
       notes
     });
-
     await newStaff.save();
 
-    // Sync: Update User role and department
-    await User.findByIdAndUpdate(userId, {
-      role,
-      department,
-      isActive: true
-    });
+    // Update user role & department
+    await User.findByIdAndUpdate(userId, { role, department, isActive: true });
 
-    res.status(201).json({ message: "Staff added successfully" });
+    return res.status(201).json({ message: "Staff added successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error in AddStaff:", error.message);
+    return res.status(500).json({ error: error.message });
   }
-}
+};

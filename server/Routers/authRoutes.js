@@ -1,10 +1,7 @@
 import express from "express"
 import limiter from "../utils/limiter.js";
-
-import User from "../Models/userModel.js";
 const router = express.Router();
-import bcrypt from "bcrypt"
-import Session from "../Models/sessionModel.js";
+
 import { currentUser, forgetPAssResetAPss, forgetPassSendOtp, forgetPAssVerifyOtp, login, registerUser, SendOtp, verifyOtp } from "../controllers/authControllers.js";
 import checkAuth from "../middleWare/checkAuthMiddleWare.js";
 
