@@ -2,7 +2,7 @@ import express from "express"
 import limiter from "../utils/limiter.js";
 const router = express.Router();
 
-import { currentUser, forgetPAssResetAPss, forgetPassSendOtp, forgetPAssVerifyOtp, login, registerUser, SendOtp, verifyOtp } from "../controllers/authControllers.js";
+import { currentUser, forgetPAssResetAPss, forgetPassSendOtp, forgetPAssVerifyOtp, login, logout, logOut_AllDevices, registerUser, SendOtp, verifyOtp } from "../controllers/authControllers.js";
 import checkAuth from "../middleWare/checkAuthMiddleWare.js";
 
 
@@ -18,6 +18,10 @@ router.post("/forgot-password/verify-otp", forgetPAssVerifyOtp);
 router.post("/forgot-password/reset-password", forgetPAssResetAPss);
 
 router.post("/login", login)
+ 
+router.post("/logout", checkAuth, logout);
+router.post("/logout-all", checkAuth,  logOut_AllDevices);
+
 router.post("/current-user", checkAuth, currentUser);
 
 

@@ -5,6 +5,7 @@ import sendMail from "../services/sendMailServices.js";
 import bcrypt from "bcrypt";
 import { loginSchema, otpValidation, registerSchema } from "../validation/zodValidation.js";
 import { z } from "zod/v4";
+import logger from "../utils/logger.js";
 
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,6 +36,7 @@ export const login = async (req, res) => {
       sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000 * 7 //  7 day
     });
+    logger.info(`Login by ${user.name} - (${user.email})`);
     return res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.log("error in login", error);
@@ -166,7 +168,33 @@ export const currentUser = async (req, res) => {
     console.log("error in current user", error);
     res.status(500).json({ error: error.message });
   }
-
 };
 
+export const logout = async (req, res) => {
+  const { sid } = req.signedCookies;
+  try {
+    await Session.deleteOne({ _id: sid });
+    res.clearCookie("sid");
+    logger.info(`Logout by ${req.user.role} - (${req.user._id})`);
+    return res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    console.log("error in logout", error);
+    res.status(500).json({ error: error.message });
+  }
+};
 
+export const logOut_AllDevices = async (req, res) => {
+  const { sid } = req.signedCookies;
+  console.log(sid);
+  try {
+    await Session.deleteMany({ userId: req.user._id });
+    res.clearCookie("sid");
+    logger.info(`Logout from all devices by ${req.user.role} - (${req.user._id})`);
+    return res.status(200).json({
+      message: "Logout successful from all devices",
+    });
+  } catch (error) {
+    console.error("error in logout all devices", error);
+    res.status(500).json({ error: error.message });
+  }
+};

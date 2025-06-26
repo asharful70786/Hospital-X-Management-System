@@ -1,5 +1,6 @@
 import Department from "../Models/Department.js";
 import Staff from "../Models/staff.js";
+import logger from "../utils/logger.js";
 
 
 export const getAllStaff = async (req, res) => {
@@ -90,18 +91,23 @@ export const getSingleStaff = async (req, res) => {
 // Only SuperAdmin/Admin should be allowed to hit this
 export const updateStaffDetails = async (req, res) => {
   try {
-    const { role, department, notes } = req.body;
+    const { role, department, notes, isActive } = req.body;
     const updatedStaff = await Staff.findByIdAndUpdate(
       req.params.id,
-      { role, department, notes },
+      { role, department, notes, isActive },
       { new: true }
     );
 
     // Sync role & dept with User
     await User.findByIdAndUpdate(updatedStaff.user, { role, department });
+    logger.info(`Staff updated by ${req.user.role} (${req.user._id})`, {
+      staffId: req.params.id,
+      updates: { role, department }
+    });
 
     res.json({ message: "Staff updated successfully", updatedStaff });
   } catch (error) {
+    logger.error(`Error updating staff by ${req.user._id}: ${error.message}`);
     res.status(500).json({ error: error.message });
   }
 }
@@ -117,7 +123,13 @@ export const markStaffInActive = async (req, res) => {
     // Only run  if current user is a Doctor &&  head of the department
     if (currentUser.role === "Doctor") {
       const department = await Department.findById(staff.department._id);
+
       if (!department || department.head.toString() !== currentUser._id.toString()) {
+        logger.warn(`Unauthorized staff removal attempt by ${currentUser.role} (${currentUser._id})`, {
+          staffId: id,
+          department: department?._id
+        });
+
         return res.status(403).json({
           message: "Access denied: Only department head can remove staff from this department"
         });
@@ -130,6 +142,11 @@ export const markStaffInActive = async (req, res) => {
     }, { new: true }
     );
     await User.findByIdAndUpdate(updatedStaff.user, { isActive: false });
+    logger.info(`Staff deactivated by ${currentUser.role} (${currentUser._id})`, {
+      removedStaff: id,
+      timestamp: new Date()
+    });
+
     return res.json({ message: "Staff removed successfully", staff: updatedStaff });
 
   } catch (error) {
@@ -139,39 +156,22 @@ export const markStaffInActive = async (req, res) => {
 };
 
 export const AddStaff = async (req, res) => {
-  const { userId, role, department, notes } = req.body;
+  const { userId, role, department } = req.body;
   const currentUser = req.user;
-
   try {
-    //  if already active staff
-    const staffExists = await Staff.findOne({ user: userId, isActive: true });
-    if (staffExists) {
-      return res.status(400).json({ message: "User is already an active staff" });
+    const existing = await Staff.findOne({ user: userId, isActive: true });
+    if (existing) {
+      logger.warn(`AddStaff attempt on existing user by ${currentUser.role} (${currentUser._id})`, { targetUser: userId })
+      return res.status(400).json({ message: "User is already staff" });
     }
-    // If current user is Doctor  &&  head of the department
-    if (currentUser.role === "Doctor") {
-      const dept = await Department.findById(department);
-      if (!dept || dept.head.toString() !== currentUser._id.toString()) {
-        return res.status(403).json({
-          message: "Access denied: Only department head can assign staff to this department"
-        });
-      }
-    }
-    // Save staff
-    const newStaff = new Staff({
-      user: userId,
-      role,
-      department,
-      notes
-    });
-    await newStaff.save();
 
-    // Update user role & department
-    await User.findByIdAndUpdate(userId, { role, department, isActive: true });
+    const newStaff = await Staff.create({ user: userId, role, department });
+    logger.info(`New staff added by ${currentUser.role} (${currentUser._id})`, { addedUser: userId, department });
 
-    return res.status(201).json({ message: "Staff added successfully" });
+    res.status(201).json({ message: "Staff added", newStaff });
   } catch (error) {
-    console.error("Error in AddStaff:", error.message);
-    return res.status(500).json({ error: error.message });
+    logger.error(`Error adding staff by ${currentUser._id}: ${error.message}`);
+    res.status(500).json({ error: error.message });
   }
 };
+

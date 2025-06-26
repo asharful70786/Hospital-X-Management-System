@@ -1,5 +1,6 @@
 import e from "express";
 import PatientRecord from "../Models/PatientRecord.js";
+import logger from "../utils/logger.js";
 
 export const getAllRecords = async (req, res) => {
   try {
@@ -51,7 +52,8 @@ export const addNewPatientRecord = async (req, res) => {
   try {
     const newRecord = new PatientRecord(req.body);
     await newRecord.save();
-    res.status(201).json({ message: "patient Record added successfully" });
+    logger.info(`New patient record added by ${req.user.role} (${req.user._id})`);
+    return  res.status(201).json({ message: "patient Record added successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -68,6 +70,7 @@ export const updatePatientRecord = async (req, res) => {
     // Only the doctor who created this can update
     if (req.user.role === 'Doctor') {
       if (!record.doctor.equals(req.user._id)) {
+        logger.warn(`Update attempt on record by ${req.user.role} (${req.user._id})`, { targetRecord: id })
         return res.status(403).json({
           error: "Access denied: You can only update your own records."
         });
@@ -76,6 +79,7 @@ export const updatePatientRecord = async (req, res) => {
     await PatientRecord.findByIdAndUpdate(id, req.body, {
       new: true,
     });
+    logger.info(`Patient record updated by ${req.user.role} (${req.user._id})`);
     res.status(200).json(`Record updated successfully`);
   } catch (error) {
     console.error(`Error in updating patient record: ${error.message}`);
@@ -89,6 +93,8 @@ export const deletePatientRecord = async (req, res) => {
   try {
     const deleted = await PatientRecord.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Record not found" });
+
+    logger.info(`Record deleted by ${req.user.role} (${req.user._id})`);
     res.json({ message: "Record deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });

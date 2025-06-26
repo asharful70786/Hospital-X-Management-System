@@ -1,4 +1,5 @@
 import Prescription from "../Models/Prescription.js";
+import logger from "../utils/logger.js";
 
 
 // Get all prescriptions with doctor & patient populated
@@ -28,6 +29,7 @@ export const addNewPrescription = async (req, res) => {
   try {
     const newItem = new Prescription(req.body);
     await newItem.save();
+    logger.info(`New prescription added by ${req.user.role} (${req.user._id})`);
     return res.status(201).json({ message: "Prescription added successfully" });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -38,20 +40,21 @@ export const getPrescriptionsByDoctorId = async (req, res) => {
   try {
     const prescriptions = await Prescription.find({ doctor: req.params.id })
       .populate("patient", "name email");
-    res.json(prescriptions);
+    return res.json(prescriptions);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 }
 
 export const updatePrescription = async (req, res) => {
-  
+
   try {
     const { id } = req.params;
     const updatedItem = await Prescription.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    res.json(updatedItem);
+    logger.info(`Prescription updated by ${req.user.role} (${req.user._id})`);
+    return res.json(updatedItem);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -63,7 +66,8 @@ export const deleteprescription = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedItem = await Prescription.findByIdAndDelete(id);
-    res.json(deletedItem);
+    logger.info(`Prescription deleted by ${req.user.role} (${req.user._id})`);
+    return res.json(deletedItem);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

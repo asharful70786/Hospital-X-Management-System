@@ -1,6 +1,7 @@
 import Appointment from "../Models/Appointment.js";
 import DoctorLeave from "../Models/DoctorLeave.js";
 import DoctorAvailability from "../Models/doctorAvailability.js";
+import logger from "../utils/logger.js";
 
 // Get all appointments (Admin, Doctor, Receptionist, etc.)
 
@@ -57,7 +58,8 @@ export const updateAppointment = async (req, res) => {
     const updatedItem = await Appointment.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    res.json(updatedItem);
+    logger.info(`Appointment updated by ${req.user.role} (${req.user._id})`);
+    return res.json(updatedItem);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -97,6 +99,7 @@ export const deleteAppointment = async (req, res) => {
       return res.status(404).json({ message: "Appointment not found" });
     }
     await Appointment.findByIdAndDelete(id);
+    logger.info(`Appointment deleted by ${req.user.role} (${req.user._id})`);
     return res.status(200).json({ message: "Appointment deleted successfully" });
   } catch (error) {
     return res.status(500).json({ message: "Failed to delete appointment", error: error.message });
@@ -124,6 +127,7 @@ export const bookAppointment = async (req, res) => {
 
     const newAppointment = new Appointment({ patient, doctor, department, date, time, symptoms });
     await newAppointment.save();
+    logger.info(`New appointment booked by ${req.user.role} (${req.user._id})`);
     res.status(201).json({ message: "Appointment booked successfully", appointment: newAppointment });
   } catch (error) {
     res.status(500).json({ message: "Failed to book appointment", error: error.message });
