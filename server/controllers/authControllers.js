@@ -3,13 +3,17 @@ import Session from "../Models/sessionModel.js";
 import User from "../Models/userModel.js";
 import sendMail from "../services/sendMailServices.js";
 import bcrypt from "bcrypt";
+import { loginSchema, otpValidation, registerSchema } from "../validation/zodValidation.js";
+import { z } from "zod/v4";
 
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { success, error, data } = loginSchema.safeParse(req.body);
+  if (!success) return res.status(400).json({ error: z.flattenError(error) });
+  const { email, password } = data;
   if (!email || !password) return res.status(400).json({ message: "Email and password are required" });
   if (!emailRegex.test(email)) return res.status(400).json({ message: "Invalid email format" });
   try {
@@ -29,7 +33,7 @@ export const login = async (req, res) => {
       httpOnly: true,
       signed: true,
       sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000 // 1 day
+      maxAge: 24 * 60 * 60 * 1000 * 7 //  7 day
     });
     return res.status(200).json({ message: "Login successful" });
   } catch (error) {
@@ -39,8 +43,12 @@ export const login = async (req, res) => {
 }
 
 export const SendOtp = async (req, res) => {
-  //will add zod validation here 
-  const { email } = req.body
+  const { success, error, data } = loginSchema.safeParse(req.body);
+  if (!success) {
+    return res.status(400).json({ error: z.flattenError(error) });
+  }
+  const { email } = data;
+  if (!emailRegex.test(email)) return res.status(400).json({ message: "Invalid email format" });
   if (!email) return res.status(400).json({ message: "Email  is  required" })
   try {
     const existenceUser = await User.findOne({ email })
@@ -54,7 +62,9 @@ export const SendOtp = async (req, res) => {
 }
 
 export const verifyOtp = async (req, res) => {
-  const { email, otp } = req.body;
+  const { success, error, data } = otpValidation.safeParse(req.body);
+  if (!success) return res.status(400).json({ error: z.flattenError(error) });
+  const { email, otp } = data;
   if (!email || !otp) return res.status(400).json({ message: "Email and OTP are  required" });
   try {
     let matchUser = await OTP.findOne({ email, otp });
@@ -68,8 +78,9 @@ export const verifyOtp = async (req, res) => {
 }
 
 export const registerUser = async (req, res) => {
-  const { email, name, password } = req.body;
-
+  const { success, error, data } = registerSchema.safeParse(req.body);
+  if (!success) return res.status(400).json({ error: z.flattenError(error) });
+  const { email, name, password } = data;
   if (!email || !name || !password) return res.status(400).json({ message: "Name , Email and password are  required" });
   if (!emailRegex.test(email)) return res.status(400).json({ message: "Invalid email format" });
   try {
@@ -88,6 +99,7 @@ export const registerUser = async (req, res) => {
 }
 
 export const forgetPassSendOtp = async (req, res) => {
+  if (!emailRegex.test(req.body.email)) return res.status(400).json({ message: "Invalid email format" });
   const { email } = req.body;
   if (!email) return res.status(400).json({ message: "Email is required" });
   try {
@@ -118,7 +130,9 @@ export const forgetPAssVerifyOtp = async (req, res) => {
 }
 
 export const forgetPAssResetAPss = async (req, res) => {
+  if (!emailRegex.test(req.body.email)) return res.status(400).json({ message: "Invalid email format" });
   const { email, newPassword } = req.body;
+
   if (!email || !newPassword)
     return res.status(400).json({ message: "Email and new password are required" });
   try {
