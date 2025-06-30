@@ -33,7 +33,7 @@ function Login() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md"
       >
-        <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-xl shadow-1xl overflow-hidden">
           {/* Header with hospital-themed gradient */}
           <div className="bg-gradient-to-r from-blue-600 to-cyan-500 p-6 text-center">
             <motion.div

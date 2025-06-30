@@ -1,58 +1,25 @@
-// 📁 pages/auth
-
-
-// 📁 pages/admin/AdminDashboard.jsx
-// 📁 pages/admin/ManageUsers.jsx
-
-
-// 📁 pages/superAdmin/SuperAdminDashboard.jsx
 // 📁 pages/superAdmin/RoleControl.jsx
 
 
-// 📁 pages/user/Profile.jsx
-export default function Profile() {
-  return <h1>User Profile</h1>;
+// 📁 pages/superAdmin/DepartmentManagement.jsx
+
+
+// 📁 pages/superAdmin/BillingSummary.jsx
+
+
+// 📁 pages/superAdmin/PaymentModeStats.jsx
+
+
+// 📁 pages/superAdmin/MonthlyTrend.jsx
+
+
+// 📁 pages/superAdmin/PatientRecords.jsx
+
+
+// 📁 pages/superAdmin/PrescriptionsControl.jsx
+
+
+// 📁 pages/superAdmin/BedManagementSA.jsx
+export default function BedManagementSA() {
+  return <h1>Bed Management for SuperAdmin</h1>;
 }
-
-// 📁 pages/user/Settings.jsx
-
-// 📁 pages/doctor/DoctorDashboard.jsx
-
-
-// 📁 pages/doctor/Patients.jsx
-
-
-// 📁 pages/nurse/NurseDashboard.jsx
-
-// 📁 pages/nurse/AssignedPatients.jsx
-
-
-// 📁 pages/ward/WardDashboard.jsx
-
-
-// 📁 pages/ward/BedManagement.jsx
-
-// 📁 pages/receptionist/ReceptionDashboard.jsx
-
-
-// 📁 pages/receptionist/Appointments.jsx
-
-
-// 📁 pages/bed/BedDashboard.jsx
-
-
-// 📁 pages/bed/BedReports.jsx
-
-// 📁 pages/NotFound.jsx
-
-
-// 📁 pages/patient/MedicalHistory.jsx
-
-
-// 📁 pages/patient/Appointments.jsx
-
-
-// 📁 pages/patient/Billing.jsx
-
-
-// 📁 pages/NotFound.jsx

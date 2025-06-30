@@ -1,0 +1,128 @@
+/* LogsViewer.css */
+.logs-viewer {
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.logs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logs-header h2 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.logs-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.log-filter, .log-search {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.log-search {
+  min-width: 200px;
+}
+
+.logs-container {
+  overflow-x: auto;
+}
+
+.logs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.logs-table th {
+  text-align: left;
+  padding: 12px 15px;
+  background-color: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+}
+
+.logs-table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.log-entry:hover {
+  background-color: #f9f9f9;
+}
+
+.log-time {
+  white-space: nowrap;
+}
+
+.level-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.level-badge.info {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.level-badge.warn {
+  background-color: #fff8e1;
+  color: #ff8f00;
+}
+
+.level-badge.error {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.log-email {
+  word-break: break-all;
+}
+
+.log-details pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 12px;
+  color: #666;
+}
+
+.no-logs {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+}
+
+@media (max-width: 768px) {
+  .logs-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .logs-controls {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .log-filter, .log-search {
+    width: 100%;
+  }
+}
