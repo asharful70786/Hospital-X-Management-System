@@ -162,8 +162,8 @@ export const getAppointmentsByDoctorId = async (req, res) => {
 // Generate available slots for a doctor on a specific date
 export const getAvailableSlotsByDoctor = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { date } = req.query;
+    const { id } = req.params; // doctor ID
+    const { date } = req.query; // date
 
     if (!date) return res.status(400).json({ message: "Date is required" });
 

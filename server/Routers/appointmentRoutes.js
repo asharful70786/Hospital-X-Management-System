@@ -43,9 +43,9 @@ router.get("/by-doctor/:id", checkAuth, allow(role.Doctor), getAppointmentsByDoc
 router.post("/book", checkAuth, allow(role.Patient), bookAppointment);
 
 //  GET all appointments for logged-in doctor (dashboard view)
-router.get("/doctor", checkAuth, allow(role.Doctor), getDoctorAppointments);
+router.get("/appointments", checkAuth, allow(role.Doctor), getDoctorAppointments);
 
 //  GET available time slots for a doctor on a specific date - holiday Time for Doctor 
-router.get("/available-slots/:id", checkAuth, allow(role.Doctor), getAvailableSlotsByDoctor);
+router.get("/available-slots/:id", checkAuth, allow(role.Receptionist), getAvailableSlotsByDoctor);
 
 export default router;

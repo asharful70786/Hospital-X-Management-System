@@ -22,7 +22,7 @@ router.post("/login", login)
 router.post("/logout", checkAuth, logout);
 router.post("/logout-all", checkAuth,  logOut_AllDevices);
 
-router.post("/current-user", checkAuth, currentUser);
+router.get("/current-user", checkAuth, currentUser);
 
 
 export default router;

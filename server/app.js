@@ -46,7 +46,6 @@ app.post("/multer", upload.single("file"), async (req, res) => {
 
 
 
-
 app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/inventory", inventoryRoute);
