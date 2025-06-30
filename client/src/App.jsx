@@ -1,18 +1,14 @@
 import "./App.css";
 import { Routes } from "react-router-dom";
+import { indexRoutes } from "./routes/IndexRoutes";
 import SideBarr from "./components/SideBarr";
-import { authRoutes } from "./routes/AuthRoutes";
-import { userRoutes } from "./routes/UserRoutes";
-
 
 function App() {
   return (
     <>
       <SideBarr />
       <Routes>
-        
-        {authRoutes}
-        {userRoutes}
+        {indexRoutes}
       </Routes>
     </>
   );
