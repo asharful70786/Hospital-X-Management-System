@@ -1,29 +1,20 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import Logout from "./pages/auth/Logout";
-import { ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";  //for styling toast
+import { Routes } from "react-router-dom";
 import SideBarr from "./components/SideBarr";
-import ForgetPass from "./pages/auth/ForgetPass";
+import { authRoutes } from "./routes/AuthRoutes";
+import { userRoutes } from "./routes/UserRoutes";
 
 
 function App() {
   return (
-    <div>
+    <>
       <SideBarr />
-
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="logout" element={<Logout />} />
-        <Route path="forget-password" element={<ForgetPass />} />
+        
+        {authRoutes}
+        {userRoutes}
       </Routes>
-
-   
-      <ToastContainer position="top-right" autoClose={3000} />
-    </div>
+    </>
   );
 }
 
