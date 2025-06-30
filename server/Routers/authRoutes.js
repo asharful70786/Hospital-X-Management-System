@@ -13,7 +13,7 @@ router.post("/verify-otp", verifyOtp)
 router.post("/register", limiter, registerUser);
 
 
-router.post("/forgot-password/send-otp", limiter, forgetPassSendOtp);
+router.post("/forgot-password/send-otp",  forgetPassSendOtp);
 router.post("/forgot-password/verify-otp", forgetPAssVerifyOtp);
 router.post("/forgot-password/reset-password", forgetPAssResetAPss);
 

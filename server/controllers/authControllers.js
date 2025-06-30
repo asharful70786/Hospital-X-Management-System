@@ -45,17 +45,17 @@ export const login = async (req, res) => {
 }
 
 export const SendOtp = async (req, res) => {
-  const { success, error, data } = loginSchema.safeParse(req.body);
-  if (!success) {
-    return res.status(400).json({ error: z.flattenError(error) });
-  }
-  const { email } = data;
+  console.log(`hit on send otp`);
+
+
+  const { email } = req.body;
+  console.log(email);
   if (!emailRegex.test(email)) return res.status(400).json({ message: "Invalid email format" });
   if (!email) return res.status(400).json({ message: "Email  is  required" })
   try {
     const existenceUser = await User.findOne({ email })
     if (existenceUser) return res.status(400).json({ message: "User already exists" });
-    await sendMail(email, "register");
+    await sendMail({ email, msgType: "register" });
     res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
     console.log("error on send otp", error);
@@ -108,7 +108,7 @@ export const forgetPassSendOtp = async (req, res) => {
     const existingUser = await User.findOne({ email });
     if (!existingUser)
       return res.status(404).json({ message: "User not found" });
-    await sendMail(email, "forgot");
+    await sendMail({ email, messageType: "forgot" });
     return res.json({ message: "OTP for password reset sent successfully" });
   } catch (error) {
     console.error("Error on forgot-password/send-otp:", error);

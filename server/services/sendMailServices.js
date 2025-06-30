@@ -13,6 +13,7 @@ const transporter = nodemailer.createTransport({
 
 // ✅ Unified mail sender
 async function sendMail({ email, msgType = "register", dynamicData = {} }) {
+  console.log(`email from serverces ${email}`);
   let subject = "";
   let messageHeading = "";
   let htmlContent = "";
@@ -80,11 +81,10 @@ async function sendMail({ email, msgType = "register", dynamicData = {} }) {
                 View Report
               </a>
             </p>
-            ${
-              resultImage
-                ? `<img src="${resultImage}" alt="Lab Report" style="max-width:100%; margin-top: 20px;" />`
-                : ""
-            }
+            ${resultImage
+        ? `<img src="${resultImage}" alt="Lab Report" style="max-width:100%; margin-top: 20px;" />`
+        : ""
+      }
           </div>
           <div style="background-color: #f3f4f6; padding: 20px; text-align: center; font-size: 12px; color: #888;">
             <p>This report is confidential and intended only for the recipient.</p>
