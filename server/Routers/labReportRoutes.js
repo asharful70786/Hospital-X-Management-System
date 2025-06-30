@@ -23,7 +23,7 @@ router.post("/add", checkAuth, allow(role.LabTech), upload.single("file"), addla
 router.patch("/update/:id", checkAuth, allow(role.LabTech, role.Doctor), updateLabReport);
 
 
-router.delete("/delete/:id", checkAuth, allow(role.Admin), deleteLabReport);
+router.delete("/delete/:id", checkAuth, allow(role.LabTech), deleteLabReport);
 
 
 export default router; 

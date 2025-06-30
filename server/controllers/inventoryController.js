@@ -23,7 +23,7 @@ export  const addNewInventoryItem = async (req, res) => {
 export const updateInventoryItem = async (req, res) => {
   //maybe i can send id  as req.body in  frontend applied time 
   const { id } = req.params;
-  console.log(id);
+  
   try {
     const updatedItem = await InventoryItem.findByIdAndUpdate(id, req.body, { new: true });
     return res.json(updatedItem);

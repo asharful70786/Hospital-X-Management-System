@@ -4,7 +4,8 @@ import sendMail from "../services/sendMailServices.js";
 
 export const getAllLabReports = async (req, res) => {
   try {
-    const labReports = await LabReport.find();
+    const labReports = await LabReport.find().populate("patient", "name email").populate("doctor", "name email");
+  
     res.json(labReports);
   } catch (error) {
     res.status(500).json({ error: error.message });

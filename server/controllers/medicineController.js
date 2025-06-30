@@ -1,7 +1,7 @@
 import Medicine from "../Models/Medicine.js";
 
 export const getAllMedicines = async (req, res) => {
-  console.log(req.user);
+  
   try {
     const medicines = await Medicine.find();
     res.json(medicines);

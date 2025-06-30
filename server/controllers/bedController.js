@@ -1,14 +1,19 @@
+
+
 import Bed from "../Models/Bed.js";
 
 //admin/super admin/receptionist
 export const getAllBeds = async (req, res) => {
   try {
-    const beds = await Bed.find();
-    res.json(beds);
+    const beds = await Bed.find()
+
+    return res.json(beds);
   } catch (error) {
+    console.error("Failed to get beds:", error);
     res.status(500).json({ error: error.message });
   }
-}
+};
+
 
 
 //only by super admin
