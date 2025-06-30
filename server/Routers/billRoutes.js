@@ -16,13 +16,13 @@ const router = express.Router();
 
 //fully Bill related Info access By SuperAdmin And  Admin
 //cause if i allow receptionist  he can guess all Incopme so . 
-router.post("/create", checkAuth, allow(role.Admin, role.SuperAdmin), createBill);
-router.get("/today", checkAuth, allow(role.Admin), getTodayCollection);
-router.get("/monthly", checkAuth, allow(role.Admin), getMonthlyCollection);
-router.get("/by-department", checkAuth, allow(role.Admin), getDepartmentWiseBills);
-router.get("/daily-income", checkAuth, allow(role.Admin), getDailyIncome);
-router.get("/payment-mode-summary", checkAuth, allow(role.Admin), getPaymentModeSummary);
-router.get("/monthly-trend", checkAuth, allow(role.Admin), getMonthlyBillingTrend);
+router.post("/create", checkAuth, allow(role.Receptionist), createBill);
+router.get("/today", checkAuth, allow(role.Admin, role.SuperAdmin), getTodayCollection);
+router.get("/monthly", checkAuth, allow(role.Admin, role.SuperAdmin), getMonthlyCollection);
+router.get("/by-department", checkAuth, allow(role.Admin, role.SuperAdmin), getDepartmentWiseBills);
+router.get("/daily-income", checkAuth, allow(role.Admin, role.SuperAdmin), getDailyIncome);
+router.get("/payment-mode-summary", checkAuth, allow(role.Admin, role.SuperAdmin), getPaymentModeSummary);
+router.get("/monthly-trend", checkAuth, allow(role.Admin, role.SuperAdmin), getMonthlyBillingTrend);
 
 
 
