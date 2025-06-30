@@ -2,9 +2,11 @@ import Session from "../Models/sessionModel.js";
 
 async function checkAuth(req, res, next) {
   const { sid } = req.signedCookies;
+  // console.log(sid);
   if (!sid) {
     return res.status(400).json({ message: "You're not logged in, please login first." });
   }
+  // console.log(sid);
 
   const session = await Session.findById(sid).populate({
     path: "userId",

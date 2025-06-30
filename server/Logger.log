@@ -12,10 +12,10 @@
 2025-06-26T20:19:39.862Z [app] INFO: Login by Ashraful Momin - (Ashraful@gmail.com)
 2025-06-26T20:19:52.644Z [app] INFO: Logout by SuperAdmin - (685d1ed1e8152edeaf2b7e40)
 2025-06-26T20:21:56.691Z [app] INFO: Login by Ashraful Momin - (Ashraful@gmail.com)
-2025-06-26T20:21:57.191Z [app] INFO: Login by Ashraful Momin - (Ashraful@gmail.com)
+2025-06-26T20:21:57.191Z [app] Warn: Login by Ashraful Momin - (Ashraful@gmail.com)
 2025-06-26T20:21:57.605Z [app] INFO: Login by Ashraful Momin - (Ashraful@gmail.com)
 2025-06-26T20:21:57.986Z [app] INFO: Login by Ashraful Momin - (Ashraful@gmail.com)
-2025-06-26T20:22:16.119Z [app] INFO: Logout from all devices by SuperAdmin - (685d1ed1e8152edeaf2b7e40) {"deletedSessions":2}
+2025-06-26T20:22:16.119Z [app] Warn: Logout from all devices by SuperAdmin - (685d1ed1e8152edeaf2b7e40) {"deletedSessions":2}
 2025-06-26T20:22:38.368Z [app] INFO: Login by Ashraful Momin - (Ashraful@gmail.com)
 2025-06-26T20:22:39.025Z [app] INFO: Login by Ashraful Momin - (Ashraful@gmail.com)
 2025-06-26T20:22:46.104Z [app] INFO: Logout by SuperAdmin - (685d1ed1e8152edeaf2b7e40)
@@ -34,3 +34,5 @@
 2025-06-29T22:55:00.421Z [app] INFO: Login by Md Ashraful momin - (ashrafulmomin@gmail.com)
 2025-06-30T07:03:24.605Z [app] INFO: Login by gulfam - (gulfam@gmail.com)
 2025-06-30T07:33:47.791Z [app] INFO: Login by gulfam - (gulfam@gmail.com)
+2025-06-30T11:47:05.737Z [app] INFO: Logout by SuperAdmin - (6861b5819c48d45c8b8ba7ff)
+2025-06-30T11:47:23.176Z [app] INFO: Login by gulfam - (gulfam@gmail.com)

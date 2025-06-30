@@ -6,7 +6,7 @@ import role from "../utils/roles.js";
 const router = express.Router();
 
 
-router.get("/all", checkAuth, allow(role.Admin, role.Receptionist), getAllBeds);
+router.get("/all-beds", checkAuth, allow(role.Admin, role.Receptionist), getAllBeds);
 
 // Only Admin should be allowed to hit this
 router.post("/add", checkAuth, allow(role.Admin), addBed)
