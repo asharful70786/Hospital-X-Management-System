@@ -134,7 +134,7 @@ function SuperAdminDashboard() {
     { path: "/superadmin/records", label: "Patient Records", icon: "📋", color: "purple" },
     { path: "/superadmin/prescriptions", label: "Prescriptions", icon: "💊", color: "red" },
     { path: "/superadmin/beds", label: "Bed Management", icon: "🛏️", color: "yellow" },
-    { path: "/superadmin/activity-logs", label: "Activity Logs", icon: "📜", color: "pink" }
+    { path: "/activity-logs", label: "Activity Logs", icon: "📜", color: "pink" }
   ];
 
   if (loading) return (
@@ -225,7 +225,7 @@ function SuperAdminDashboard() {
             <h2>Recent Activity</h2>
             <button 
               className="view-all-btn"
-              onClick={() => navigate('/superadmin/activity-logs')}
+              onClick={() => navigate('/activity-logs')}
             >
               View All →
             </button>

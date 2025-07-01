@@ -1,24 +1,20 @@
-// ✅ Doctor.jsx
+
 import { Route } from "react-router-dom";
 import DoctorDashboard from "../pages/doctor/DoctorDashboard";
 import Patients from "../pages/doctor/Patients";
+import Appointments from "../pages/doctor/Appointments";
+import PrescriptionBoard from "../pages/doctor/PrescriptionBoard";
+import ReportsUpload from "../pages/doctor/ReportsUpload";
+import AvailabilityManager from "../pages/doctor/AvailabilityManager";
+import LeaveManager from "../pages/doctor/LeaveManager";
 
 export const doctorRoutes = [
   <Route path="/doctor/dashboard" element={<DoctorDashboard />} key="doc-dashboard" />,
-  <Route path="/doctor/patients" element={<Patients />} key="doc-patients" />
+  <Route path="/doctor/patients" element={<Patients />} key="doc-patients" />,
+  <Route path="/doctor/appointments" element={<Appointments />} key="doc-appointments" />,
+  <Route path="/doctor/prescriptions" element={<PrescriptionBoard />} key="doc-prescriptions" />,
+  <Route path="/doctor/reports" element={<ReportsUpload />} key="doc-reports" />,
+  <Route path="/doctor/availability" element={<AvailabilityManager />} key="doc-availability" />,
+  <Route path="/doctor/leaves" element={<LeaveManager />} key="doc-leaves" />,
 ];
 
-// export const doctorRoutes = [
-//   <Route path="/dashboard" element={<DoctorDashboard />} key="dashboard" />,
-//   // <Route path="/user/logs" element={<Adminlogs />} key="logs" />,{by super admin only}
-//   //  GET appointments by doctor ID
-//   <Route path="/by-doctor/:id" element={<ForgetPass />} key="by-doctor" />,
-//   //GET all appointments for logged-in doctor (dashboard view) for receptionist
-//   <Route path="/appointments" element={<ForgetPass  />} key="by-doctor" />, //get all appointments
-//   //get availbe slots by doctor id for receptionist
-//   <Route path="/available-slots/:id" element={<ForgetPass />} />,
-//   <Route path="/by-doctor/:id" element={<ForgetPass />} key="by-doctor" />,
-//   <Route path="/by-doctor/:id" element={<ForgetPass />} key="by-doctor" />,
-//   <Route path="/by-doctor/:id" element={<ForgetPass />} key="by-doctor" />,
-//   <Route path="/by-doctor/:id" element={<ForgetPass />} key="by-doctor" />,
-// ];

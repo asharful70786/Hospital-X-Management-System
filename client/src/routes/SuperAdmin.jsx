@@ -21,5 +21,5 @@ export const superAdminRoutes = [
   <Route path="/superadmin/records" element={<LabReportManagement />} key="sa-records" />,
   <Route path="/superadmin/prescriptions" element={<PrescriptionsControl />} key="sa-prescriptions" />,
   <Route path="/superadmin/beds" element={<BedManagement />} key="sa-bed-mgmt" />,
-  <Route path="superAdmin/activity-logs" element={<LogsViewer />} key="sa-activity-logs" />
+  <Route path="/activity-logs" element={<LogsViewer />} key="sa-activity-logs" />
 ];
