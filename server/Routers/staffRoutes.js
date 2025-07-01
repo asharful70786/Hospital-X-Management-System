@@ -23,7 +23,7 @@ router.get("/active", checkAuth, allow(role.Admin, role.Receptionist), getActive
 
 // GET staff by role
 //also access by the department head
-router.get("/by-role/:role", checkAuth, allow(role.Admin, role.Receptionist, role.Doctor), getUserByRole);
+router.get("/by-role/:role", checkAuth, allow(role.Admin, role.Receptionist, role.Doctor , role.LabTech), getUserByRole);
 
 
 

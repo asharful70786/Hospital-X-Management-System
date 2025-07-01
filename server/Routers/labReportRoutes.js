@@ -17,10 +17,10 @@ router.get("/all", checkAuth, allow(role.Receptionist, role.Admin, role.LabTech,
 // condition apply  soon 
 router.get("/single/:id", checkAuth, allow(role.Patient), patientLabReportAccess);
 
-router.post("/add", checkAuth, allow(role.LabTech), upload.single("file"), addlabReport);
+router.post("/add", checkAuth, allow(role.LabTech , role.Doctor), upload.single("file"), addlabReport);
 
 
-router.patch("/update/:id", checkAuth, allow(role.LabTech, role.Doctor), updateLabReport);
+router.patch("/update/:id", checkAuth, allow(role.LabTech), updateLabReport);
 
 
 router.delete("/delete/:id", checkAuth, allow(role.LabTech), deleteLabReport);

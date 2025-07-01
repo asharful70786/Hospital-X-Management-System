@@ -1,11 +1,12 @@
 import LabReport from "../Models/LabReport.js";
 import { uploadImage } from "../services/cloudinaryServices.js";
 import sendMail from "../services/sendMailServices.js";
+import logger from "../utils/logger.js";
 
 export const getAllLabReports = async (req, res) => {
   try {
     const labReports = await LabReport.find().populate("patient", "name email").populate("doctor", "name email");
-  
+
     res.json(labReports);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -27,22 +28,18 @@ export const patientLabReportAccess = async (req, res) => {
 //only by receptionist
 export const addlabReport = async (req, res) => {
   const { patient, doctor, testType, status, notes } = req.body;
-
   try {
     if (!patient || !doctor || !testType || !status || !notes) {
       return res.status(400).json({ message: "All fields are required" });
     }
-
     let imageUrl = "";
     if (req.file) {
       const result = await uploadImage(req.file);
       imageUrl = result.secure_url;
     }
-
     if (status === "Completed" && !req.file) {
       return res.status(400).json({ message: "Result file required for completed reports" });
     }
-
     const newReport = new LabReport({
       patient,
       doctor,
@@ -65,8 +62,8 @@ export const addlabReport = async (req, res) => {
           dynamicData: {
             patientName: populatedReport.patient.name,
             testType,
-            reportUrl: imageUrl,      
-            resultImage: imageUrl,   
+            reportUrl: imageUrl,
+            resultImage: imageUrl,
             notes,
           },
         });
@@ -84,6 +81,10 @@ export const addlabReport = async (req, res) => {
 
 //by super admin
 export const updateLabReport = async (req, res) => {
+  const { status, resultUrl, notes, patient, doctor } = req.body;
+  if (!status && !resultUrl && !notes && !patient && !doctor) {
+    return res.status(400).json({ message: "At least one field is required to update" });
+  }
   try {
     const { id } = req.params;
     const updatedLabReport = await LabReport.findByIdAndUpdate(id, req.body, { new: true });
@@ -99,8 +100,10 @@ export const deleteLabReport = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedLabReport = await LabReport.findByIdAndDelete(id);
-    res.json(deletedLabReport);
+    logger.warn(`Lab report deleted by ${req.user.role} (${req.user._id})`, { deletedReport: id });
+    return res.json(deletedLabReport);
   } catch (error) {
+    logger.error(`Error deleting lab report by ${req.user.role} (${req.user._id}): ${error.message}`);
     res.status(500).json({ error: error.message });
   }
 }

@@ -11,7 +11,6 @@ export const getallUsers = async (req, res) => {
   }
 }
 
-
 export const getUsersByRole = async (req, res) => {
   try {
     const role = req.params.role;

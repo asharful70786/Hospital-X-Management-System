@@ -43,3 +43,13 @@
 2025-07-01T12:17:50.203Z [app] WARN: Doctor (685d1ed1e8152edeaf2b7e58) attempted to re-add patient 685d1ed1e8152edeaf2b7e4a
 2025-07-01T12:18:03.765Z [app] WARN: Doctor (685d1ed1e8152edeaf2b7e58) added new patient 6863d1fb8e2aaa1b80cd1743
 2025-07-01T12:19:37.671Z [app] INFO: New prescription added by Doctor (685d1ed1e8152edeaf2b7e58)
+2025-07-01T14:54:45.943Z [app] INFO: Login by Terrell Bailey - (paolo_beier@hotmail.com)
+2025-07-01T15:09:50.082Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"6863e9abfffd58f3dbe1d001"}
+2025-07-01T15:09:52.585Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f62"}
+2025-07-01T15:09:53.314Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f61"}
+2025-07-01T15:09:54.485Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f60"}
+2025-07-01T15:09:55.327Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f5f"}
+2025-07-01T15:09:55.815Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f5e"}
+2025-07-01T15:09:56.358Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f5d"}
+2025-07-01T15:09:56.865Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f5c"}
+2025-07-01T15:09:57.266Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f5b"}

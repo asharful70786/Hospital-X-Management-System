@@ -1,5 +1,6 @@
 import Department from "../Models/Department.js";
 import Staff from "../Models/staff.js";
+import User from "../Models/userModel.js";
 import logger from "../utils/logger.js";
 
 
@@ -25,45 +26,61 @@ export const getActiveStaff = async (req, res) => {
   }
 }
 
+// controllers/userController.js
 export const getUserByRole = async (req, res) => {
-  const { role: targetRole } = req.params;
-  const currentUser = req.user;
-
+  const { role: targetRole } = req.params;      
+  const currentUser = req.user;         
   try {
-    // Admin & Receptionist have full access
-    if (["Admin", "Receptionist"].includes(currentUser.role)) {
-      const staffList = await Staff.find({ role: targetRole, isActive: true })
-        .populate("user", "name email")
-        .populate("department", "name");
-      return res.json(staffList);
-    }
-    // Doctor: Allow only if department head
-    if (currentUser.role === "Doctor") {
-      const department = await Department.findOne({ head: currentUser._id });
-
-      if (!department) {
-        return res.status(403).json({ message: "Access denied: Not a department head" });
+    const canSeeEverything = ["Admin", "SuperAdmin", "Receptionist" , "LabTech"].includes(
+      currentUser.role
+    );
+    const labTechCanSee = ["Patient", "Doctor"]; 
+    if (
+      !canSeeEverything &&                                  // not Admin-ish
+      !(currentUser.role === "LabTech" && labTechCanSee.includes(targetRole))
+    ) {
+      if (currentUser.role !== "Doctor") {
+        return res.status(403).json({ message: "Access denied" });
       }
-      // Limit staff list to same department only
+    }
+
+    if (targetRole === "Patient") {
+      const patients = await User
+        .find({ role: "Patient", isActive: true })
+        .select("_id name email phone");
+      return res.json(patients);
+    }
+    // If requester is a department-head doctor, limit to own department
+    if (currentUser.role === "Doctor" && !canSeeEverything) {
+      const department = await Department.findOne({ head: currentUser._id });
+      if (!department) {
+        return res
+          .status(403)
+          .json({ message: "Access denied: Not a department head" });
+      }
       const staffList = await Staff.find({
         role: targetRole,
         department: department._id,
-        isActive: true
+        isActive: true,
       })
         .populate("user", "name email")
         .populate("department", "name");
 
-      return res.json(staffList);
+      return res.json(staffList);                  
     }
+    // Everyone else who made it this far (Admin/SuperAdmin/Receptionist
+    // or LabTech asking for Doctor) gets the unrestricted staff list.
+    const staffList = await Staff.find({ role: targetRole, isActive: true })
+      .populate("user", "name email")
+      .populate("department", "name");
 
-    // Other roles — deny access
-    return res.status(403).json({ message: "Access denied" });
-
-  } catch (error) {
-    console.error("Error in getUserByRole:", error.message);
-    res.status(500).json({ error: error.message });
+    return res.json(staffList);
+  } catch (err) {
+    console.error("getUserByRole ▶︎", err);
+    res.status(500).json({ error: err.message });
   }
 };
+
 
 export const getUsersByDepartmentId = async (req, res) => {
   try {
@@ -156,7 +173,7 @@ export const markStaffInActive = async (req, res) => {
 };
 
 export const AddStaff = async (req, res) => {
-  const { userId, role , department } = req.body;
+  const { userId, role, department } = req.body;
   const currentUser = req.user;
   try {
     const existing = await Staff.findOne({ user: userId, isActive: true });
