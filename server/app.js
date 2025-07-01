@@ -15,6 +15,7 @@ import recordRoute from "./Routers/recordRoutes.js";
 import staffRoute from "./Routers/staffRoutes.js";
 import departMentRoute from "./Routers/departmentRoutes.js";
 import leaveRoute from "./Routers/leaveRoute.js"
+import availabilityRoute from "./Routers/availabilityRoute.js"
 import cookieParser from "cookie-parser";
 
 
@@ -46,6 +47,7 @@ app.use("/staff", staffRoute)
 app.use("/bills", billRoutes); //Bill related i too  help chatGpt , cause i don't know aggregate in mongodb , but soon  i will learn it 
 app.use("/prescriptions", prescriptionRoutes);
 app.use("/leave", leaveRoute);
+app.use("/availability", availabilityRoute);
 
 
 
