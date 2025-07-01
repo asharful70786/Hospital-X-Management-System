@@ -8,6 +8,7 @@ import { wardRoutes } from "./WardRoutes.jsx";
 import { receptionRoutes } from "./Receptionist.jsx";
 import {patientRoutes} from "./PatientRoutes.jsx"
 import { bedRoutes } from "./Bed.jsx"; 
+import {labReport} from "./LabReportRoutes.jsx"
 
 export const indexRoutes = [
   ...authRoutes,
@@ -19,5 +20,6 @@ export const indexRoutes = [
   ...wardRoutes,
   ...receptionRoutes,
   ...patientRoutes,
-  ...bedRoutes
+  ...bedRoutes,
+  ...labReport,
 ];

@@ -1,4 +1,4 @@
-// ✅ Bed.jsx
+
 import { Route } from "react-router-dom";
 import BedDashboard from "../pages/bed/BedDashboard";
 import BedReports from "../pages/bed/BedReports";

@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^1.0.6",
     "@tailwindcss/vite": "^4.1.11",
+    "dompurify": "^3.2.6",
     "framer-motion": "^12.19.2",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
