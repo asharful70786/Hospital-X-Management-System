@@ -24,17 +24,17 @@ router.get("/", checkAuth, allow(role.Admin, role.Receptionist), getAllAppointme
 //  GET a single appointment by ID
 router.get("/single/:id", checkAuth, allow(role.Admin, role.Receptionist), getSingleAppointment);
 
-//  POST create a new appointment (admin/receptionist)
-router.post("/add", checkAuth, allow(role.Admin, role.Receptionist), makeAppointment);
+//  POST create a new appointment (receptionist)
+router.post("/add", checkAuth, allow( role.Receptionist), makeAppointment);
 
 //  PATCH update appointment
-router.patch("/update/:id", checkAuth, allow(role.Admin, role.Receptionist), updateAppointment);
+router.patch("/update/:id", checkAuth, allow( role.Receptionist), updateAppointment);
 
 //  DELETE appointment (admin-level access)
 router.delete("/delete/:id", checkAuth, allow(role.Admin, role.Receptionist), deleteAppointment);
 
 //  GET appointments by patient
-router.get("/by-patient/:id", checkAuth, allow(role.Admin, role.Receptionist, role.Patient), getAllAppointmentsByPatientId);
+router.get("/by-patient/:id", checkAuth, allow( role.Receptionist, role.Patient , role.Doctor), getAllAppointmentsByPatientId);
 
 //  GET appointments by doctor ID
 router.get("/by-doctor/:id", checkAuth, allow(role.Doctor), getAppointmentsByDoctorId);
