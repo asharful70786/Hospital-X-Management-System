@@ -1,25 +1,28 @@
 import mongoose from "mongoose";
-const DoctorAvailabilitySchema = new mongoose.Schema({
+
+const doctorAvailabilitySchema = new mongoose.Schema({
   doctor: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
+
   },
-  dayOfWeek: {
+  weekday: {
     type: String,
-    enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    required: true,
+
   },
-  startTime: {
-    type: String
-  }, // e.g., "09:00"
-  endTime: {
-    type: String
-  },   // e.g., "13:00"
-  slotDuration: {
-    type: Number, default: 15
-  }, // in minutes
+  slots: [
+    {
+      type: String, // e.g., "10:00", "14:30"
+      required: true,
+    }
+  ]
 });
 
+doctorAvailabilitySchema.index({ doctor: 1, weekday: 1 }, { unique: true });
 
-const DoctorAvailability = mongoose.model('DoctorAvailability', DoctorAvailabilitySchema);
+const DoctorAvailability = mongoose.model("DoctorAvailability", doctorAvailabilitySchema);
 export default DoctorAvailability;
+
