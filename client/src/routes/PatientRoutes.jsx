@@ -1,4 +1,3 @@
-// ✅ PatientRoutes.jsx
 import { Route } from "react-router-dom";
 
 import MedicalHistory from "../pages/patient/MedicalHistory";

@@ -1,25 +1,15 @@
-// 📁 pages/superAdmin/RoleControl.jsx
-
-
-// 📁 pages/superAdmin/DepartmentManagement.jsx
-
-
-// 📁 pages/superAdmin/BillingSummary.jsx
-
-
-// 📁 pages/superAdmin/PaymentModeStats.jsx
-
-
-// 📁 pages/superAdmin/MonthlyTrend.jsx
-
-
-// 📁 pages/superAdmin/PatientRecords.jsx
-
-
-// 📁 pages/superAdmin/PrescriptionsControl.jsx
-
-
-// 📁 pages/superAdmin/BedManagementSA.jsx
-export default function BedManagementSA() {
-  return <h1>Bed Management for SuperAdmin</h1>;
-}
+| Function                       | Access                    |
+| ------------------------------ | ------------------------- |
+| View all appointments          | ✅ Full                    |
+| Book appointments              | ✅                         |
+| Cancel/edit appointments       | ✅ (but only future ones)  |
+| Access doctor availability     | ✅ Read-only               |
+| View patient summary           | ✅ (basic info only)       |
+| Add new patient (during visit) | ✅                         |
+| View billing summary (basic)   | ✅                         |
+| Notify patients (SMS/email)    | ✅                         |
+| See ward/bed availability      | ❌ (Only summary optional) |
+| See full prescriptions         | ❌ ❌                       |
+| See medical records            | ❌ ❌                       |
+| Access to lab reports          | ❌ ❌                       |
+| Modify staff or hospital data  | ❌ ❌                       |

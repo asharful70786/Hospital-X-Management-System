@@ -1,143 +1,175 @@
-import React, { useEffect, useState , useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
-import { motion } from "framer-motion";
-const useAuth = () => useContext(AuthContext);
+import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
-function AvailabilityManager() {
-  const { user } = useAuth();
-  const [availability, setAvailability] = useState([]);
-  const [weekday, setWeekday] = useState("Monday");
-  const [slot, setSlot] = useState("");
-  const BaseUrl = "http://localhost:4000";
+/* ---------- API HELPERS ---------- */
+const BaseUrl = "http://localhost:4000";
 
-  useEffect(() => {
-    if (user?._id) fetchAvailability();
-  }, [user]);
+/** GET /availability/:id  → [{ _id, weekday, slots:[…] }] */
+const fetchAvailability = async docId => {
+  const r = await fetch(`${BaseUrl}/availability/${docId}`, { credentials: "include" });
+  if (!r.ok) throw new Error("Could not load availability");
+  return await r.json();
+};
 
-  async function fetchAvailability() {
+/** POST /availability  { doctor, weekday, slots }  (create OR update) */
+const saveAvailability = async payload => {
+  const r = await fetch(`${BaseUrl}/availability`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!r.ok) throw new Error((await r.json()).message || "Failed to save");
+  return await r.json();
+};
+
+/** DELETE /availability/:id */
+const removeAvailability = async id => {
+  const r = await fetch(`${BaseUrl}/availability/${id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  if (!r.ok) throw new Error("Failed to delete");
+};
+
+/* ---------- WEEKDAY CONSTANT ---------- */
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+/* ---------- COMPONENT ---------- */
+export default function AvailabilityManager({ doctorId }) {
+  const [data, setData] = useState([]);        // [{ _id, weekday, slots }]
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
+
+  const [form, setForm] = useState({ weekday: "Monday", time: "09:00" });
+
+  /* initial fetch */
+  useEffect(() => { refresh(); }, [doctorId]);
+
+  async function refresh() {
+    setLoading(true);
     try {
-      const res = await fetch(`${BaseUrl}/availability/${user._id}`, {
-        credentials: "include",
-      });
-      const data = await res.json();
-      setAvailability(data);
+      setData(await fetchAvailability(doctorId));
     } catch (err) {
-      console.error("Failed to load availability", err);
+      setError(err.message);
+      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
   }
 
-  async function handleAddSlot(e) {
+  /* ---------- helpers ---------- */
+  const sortAsc = arr => [...arr].sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
+
+  /* ---------- ADD SLOT ---------- */
+  async function handleAdd(e) {
     e.preventDefault();
-    if (!slot.trim()) return;
+    const { weekday, time } = form;
+    const hhmm = time.slice(0, 5);                // normalise "HH:mm"
 
     try {
-      const existing = availability.find(a => a.weekday === weekday);
-      const newSlots = existing ? [...new Set([...existing.slots, slot])] : [slot];
+      const dayDoc = data.find(d => d.weekday === weekday);
+      const existing = dayDoc ? dayDoc.slots : [];
 
-      const res = await fetch(`${BaseUrl}/availability`, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          doctor: user._id,
-          weekday,
-          slots: newSlots,
-        }),
-      });
+      if (existing.includes(hhmm)) {
+        toast.error("Slot already exists");
+        return;
+      }
 
-      if (res.ok) {
-        fetchAvailability();
-        setSlot("");
+      const merged = sortAsc([...existing, hhmm]);
+      await saveAvailability({ doctor: doctorId, weekday, slots: merged });
+      toast.success("Saved");
+
+      setData(prev =>
+        dayDoc
+          ? prev.map(d => (d.weekday === weekday ? { ...d, slots: merged } : d))
+          : [...prev, { weekday, slots: merged }]
+      );
+    } catch (err) {
+      toast.error(err.message);
+    }
+  }
+
+  /* ---------- DELETE SLOT ---------- */
+  async function delSlot(weekday, time) {
+    const dayDoc = data.find(d => d.weekday === weekday);
+    if (!dayDoc) return;
+
+    const updated = dayDoc.slots.filter(t => t !== time);
+    try {
+      if (updated.length === 0) {
+        await removeAvailability(dayDoc._id);
+        setData(data.filter(d => d._id !== dayDoc._id));
+      } else {
+        await saveAvailability({ doctor: doctorId, weekday, slots: updated });
+        setData(data.map(d => (d._id === dayDoc._id ? { ...d, slots: updated } : d)));
       }
     } catch (err) {
-      console.error("Failed to add slot", err);
+      toast.error(err.message);
     }
   }
 
-  async function handleDelete(id) {
-    try {
-      const res = await fetch(`${BaseUrl}/availability/${id}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      if (res.ok) fetchAvailability();
-    } catch (err) {
-      console.error("Delete failed", err);
-    }
-  }
+  /* ---------- UI ---------- */
+  if (loading) return <p className="p-6">Loading…</p>;
+  if (error)   return <p className="p-6 text-rose-600">{error}</p>;
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <motion.h2
-        className="text-2xl font-bold text-indigo-600 mb-6"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        🕒 Manage Weekly Availability
-      </motion.h2>
+    <section className="p-6">
+      <Toaster position="top-right" />
+      <h2 className="text-xl font-semibold mb-4">Manage Weekly Availability</h2>
 
-      <form onSubmit={handleAddSlot} className="bg-white p-4 mb-8 rounded-xl shadow space-y-4">
-        <div>
-          <label className="block font-semibold">Weekday</label>
-          <select
-            className="w-full border rounded px-3 py-2"
-            value={weekday}
-            onChange={(e) => setWeekday(e.target.value)}
-          >
-            {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day) => (
-              <option key={day} value={day}>{day}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block font-semibold">Time Slot (e.g., 10:00)</label>
-          <input
-            type="text"
-            required
-            className="w-full border rounded px-3 py-2"
-            value={slot}
-            onChange={(e) => setSlot(e.target.value)}
-          />
-        </div>
-        <button
-          type="submit"
-          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+      {/* add-slot form */}
+      <form onSubmit={handleAdd} className="flex flex-wrap gap-2 items-end mb-6">
+        <select
+          value={form.weekday}
+          onChange={e => setForm({ ...form, weekday: e.target.value })}
+          className="border p-2 rounded"
         >
-          Add Slot
+          {WEEKDAYS.map(d => <option key={d}>{d}</option>)}
+        </select>
+
+        <input
+          type="time"
+          value={form.time}
+          onChange={e => setForm({ ...form, time: e.target.value })}
+          className="border p-2 rounded"
+          required
+        />
+
+        <button className="px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700">
+          ➕ Add
         </button>
       </form>
 
-      {availability.length === 0 ? (
-        <p className="text-gray-500">No availability set yet.</p>
-      ) : (
-        availability.map((entry, i) => (
-          <div
-            key={i}
-            className="bg-gray-50 mb-4 p-4 rounded-xl shadow border-l-4 border-indigo-500"
-          >
-            <div className="font-semibold text-indigo-700">{entry.weekday}</div>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {entry.slots.map((s, idx) => (
-                <span
-                  key={idx}
-                  className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm"
-                >
-                  {s}
-                </span>
-              ))}
+      {/* weekday grid */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {WEEKDAYS.map(day => {
+          const doc = data.find(d => d.weekday === day);
+          return (
+            <div key={day} className="border rounded p-3">
+              <h3 className="font-semibold mb-2">{day}</h3>
+
+              {doc ? (
+                <ul className="space-y-1">
+                  {doc.slots.map(t => (
+                    <li key={t} className="flex justify-between items-center">
+                      <span>{t}</span>
+                      <button
+                        onClick={() => delSlot(day, t)}
+                        className="text-rose-600 text-xs hover:underline"
+                      >
+                        Delete
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-gray-500 text-sm">No slots</p>
+              )}
             </div>
-                    <p>Availability For  2 hour</p>
-            <button
-              onClick={() => handleDelete(entry._id)}
-              className="mt-3 text-red-600 text-sm hover:underline"
-            >
-              Delete This Day's Availability
-            </button>
-          </div>
-        ))
-      )}
-    </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
-
-export default AvailabilityManager;
