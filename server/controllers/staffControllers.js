@@ -156,7 +156,7 @@ export const markStaffInActive = async (req, res) => {
 };
 
 export const AddStaff = async (req, res) => {
-  const { userId, role, department } = req.body;
+  const { userId, role , department } = req.body;
   const currentUser = req.user;
   try {
     const existing = await Staff.findOne({ user: userId, isActive: true });

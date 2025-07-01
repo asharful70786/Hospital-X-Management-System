@@ -26,13 +26,24 @@ export const getPrescriptionsByPatientId = async (req, res) => {
 }
 
 export const addNewPrescription = async (req, res) => {
+  const { patient, doctor, medicines, notes } = req.body;
+  if (!patient || !doctor || !medicines || !notes) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
   try {
-    const newItem = new Prescription(req.body);
+    const newItem = new Prescription({
+      patient,
+      doctor,
+      medicines,
+      notes
+    });
     await newItem.save();
     logger.info(`New prescription added by ${req.user.role} (${req.user._id})`);
     return res.status(201).json({ message: "Prescription added successfully" });
   } catch (error) {
+    logger.error(`Failed to add prescription by ${req.user.role} - (${req.user._id})`);
     res.status(500).json({ error: error.message });
+
   }
 }
 

@@ -16,7 +16,7 @@ const router = express.Router();
 
 // GET all prescriptions — Admin, Receptionist, Doctor
 router.get("/all", checkAuth,
-  allow(role.Admin, role.Receptionist, role.Doctor),
+  allow(role.Admin, role.Receptionist),
   getAllPrescriptions
 );
 

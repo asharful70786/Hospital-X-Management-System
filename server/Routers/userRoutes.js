@@ -26,6 +26,8 @@ router.patch("/update/:id", checkAuth, upDateUserById);
 // PATCH /api/users/deactivate/:id - Deactivate user account
 router.patch("/deactivate/:id", checkAuth, allow(role.Admin, role.SuperAdmin), deactivateUsers);
 
+
+
 export default router;
 
 

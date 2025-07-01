@@ -37,3 +37,9 @@
 2025-06-30T11:47:05.737Z [app] INFO: Logout by SuperAdmin - (6861b5819c48d45c8b8ba7ff)
 2025-06-30T11:47:23.176Z [app] INFO: Login by gulfam - (gulfam@gmail.com)
 2025-07-01T09:48:43.270Z [app] INFO: Login by Dr. Karen Bergstrom - (angel54@gmail.com)
+2025-07-01T12:16:14.276Z [app] ERROR: Error adding patient by doctor 685d1ed1e8152edeaf2b7e58: User is not defined
+2025-07-01T12:16:42.431Z [app] WARN: Doctor (685d1ed1e8152edeaf2b7e58) added new patient 6863d1aa8e2aaa1b80cd1732
+2025-07-01T12:17:41.769Z [app] WARN: Doctor (685d1ed1e8152edeaf2b7e58) attempted to re-add patient 6861b5179c48d45c8b8ba7f9
+2025-07-01T12:17:50.203Z [app] WARN: Doctor (685d1ed1e8152edeaf2b7e58) attempted to re-add patient 685d1ed1e8152edeaf2b7e4a
+2025-07-01T12:18:03.765Z [app] WARN: Doctor (685d1ed1e8152edeaf2b7e58) added new patient 6863d1fb8e2aaa1b80cd1743
+2025-07-01T12:19:37.671Z [app] INFO: New prescription added by Doctor (685d1ed1e8152edeaf2b7e58)
