@@ -41,29 +41,44 @@ export const getDoctorAppointments = async (req, res) => {
 
 // Create appointment manually (receptionist/admin)
 export const makeAppointment = async (req, res) => {
+  const { patient, doctor, department, date, time, status } = req.body;
+  if (!patient || !doctor || !department || !date || !time || !status) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
   try {
     const newItem = new Appointment(req.body);
     await newItem.save();
+    logger.warn(`New appointment added by ${req.user.role} (${req.user._id})`);
     return res.status(201).json({ message: "Item added successfully" });
   } catch (error) {
+    logger.error(`Failed to set Appointment by -  ${req.user.role} - (${req.user._id})`);
     res.status(500).json({ error: error.message });
   }
 };
 
-// Update appointment info
 
+
+// PATCH /appointment/update/:id
 export const updateAppointment = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedItem = await Appointment.findByIdAndUpdate(id, req.body, {
+    const changeS = req.body;
+    const updated = await Appointment.findByIdAndUpdate(id, changeS, {
       new: true,
-    });
-    logger.info(`Appointment updated by ${req.user.role} (${req.user._id})`);
-    return res.json(updatedItem);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    }).populate("patient", "name email")
+      .populate("doctor", "name email");
+    if (!updated) return res.status(404).json({ error: "Appointment not found" });
+
+    logger.warn(
+      `Appointment ${id} updated by ${req.user.role} (${req.user._id}) → ${JSON.stringify(changeS)}`
+    );
+    res.json(updated);
+  } catch (err) {
+    logger.error(`Failed to update Appointment by -  ${req.user.role} - (${req.user._id})`);
+    res.status(500).json({ error: err.message });
   }
 };
+
 
 // Get all appointments by patient ID
 //patient can only see his own appointments

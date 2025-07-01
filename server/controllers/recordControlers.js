@@ -3,6 +3,7 @@ import PatientRecord from "../Models/PatientRecord.js";
 import logger from "../utils/logger.js";
 
 export const getAllRecords = async (req, res) => {
+  console.log("hit on get all records" , req.user); ;
   try {
     const records = await PatientRecord.find()
       .populate("patient", "name email")

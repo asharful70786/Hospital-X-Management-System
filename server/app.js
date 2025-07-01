@@ -16,7 +16,9 @@ import staffRoute from "./Routers/staffRoutes.js";
 import departMentRoute from "./Routers/departmentRoutes.js";
 import leaveRoute from "./Routers/leaveRoute.js"
 import availabilityRoute from "./Routers/availabilityRoute.js"
+import wardRoute from "./Routers/wordRoutes.js"
 import cookieParser from "cookie-parser";
+import User from "./Models/userModel.js";
 
 
 await connectDB();
@@ -31,6 +33,28 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET_KEy))
+
+
+// routes/user.js
+app.post("/user/quick-create", async (req, res) => {
+  const { name, email, phone } = req.body;
+  if (!name || !email || !phone) return res.status(400).json({ message: "Required" });
+
+  try {
+    // If user already exists → re-use it
+    let user = await User.findOne({ email });
+    if (!user) {
+      user = new User({ name, email, phone, role: "Patient" });
+      await user.save();
+      
+    }
+    res.status(201).json({ _id: user._id });
+  } catch (error) {
+    res.send(error.message);
+    console.log(error);
+  }
+});
+
 
 
 
@@ -48,10 +72,11 @@ app.use("/bills", billRoutes); //Bill related i too  help chatGpt , cause i don'
 app.use("/prescriptions", prescriptionRoutes);
 app.use("/leave", leaveRoute);
 app.use("/availability", availabilityRoute);
+app.use("/ward" , wardRoute)
 
 
 
-
+//ward/all
 app.use((error, req, res, next) => {
   res.status(500).json({ error: error.message });
 });

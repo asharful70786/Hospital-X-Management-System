@@ -15,7 +15,7 @@ import {
 const router = express.Router();
 
 // GET all records — Admin & SuperAdmin (analytics, audit)
-router.get("/all-records", checkAuth, allow(role.Admin, role.SuperAdmin), getAllRecords);
+router.get("/all-records", checkAuth, allow(role.Admin, role.SuperAdmin ,  ), getAllRecords);
 
 // GET records by patient ID — Doctor & Nurse only
 router.get("/by-patient/:id", checkAuth, allow(role.Doctor, role.Nurse), getRecordByPatientId);

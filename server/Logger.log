@@ -53,3 +53,10 @@
 2025-07-01T15:09:56.358Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f5d"}
 2025-07-01T15:09:56.865Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f5c"}
 2025-07-01T15:09:57.266Z [app] WARN: Lab report deleted by LabTech (685d1ed1e8152edeaf2b7e4d) {"deletedReport":"685d1ed2e8152edeaf2b7f5b"}
+2025-07-01T19:29:28.994Z [app] INFO: Login by Joanne Hegmann - (dianna.jerde@yahoo.com)
+2025-07-01T20:12:29.011Z [app] WARN: New appointment added by Receptionist (685d1ed1e8152edeaf2b7e4f)
+2025-07-01T20:18:20.417Z [app] WARN: New appointment added by Receptionist (685d1ed1e8152edeaf2b7e4f)
+2025-07-01T20:22:01.129Z [app] WARN: New appointment added by Receptionist (685d1ed1e8152edeaf2b7e4f)
+2025-07-01T20:37:02.282Z [app] INFO: Appointment 6864412c2479c83aa0f5ab9b updated by Receptionist (685d1ed1e8152edeaf2b7e4f) → {"status":"Cancelled"}
+2025-07-01T20:41:00.292Z [app] INFO: Appointment 685d1ed2e8152edeaf2b7ede updated by Receptionist (685d1ed1e8152edeaf2b7e4f) → {"status":"Cancelled"}
+2025-07-01T20:43:39.337Z [app] WARN: Appointment 685d1ed2e8152edeaf2b7ef0 updated by Receptionist (685d1ed1e8152edeaf2b7e4f) → {"status":"Cancelled"}

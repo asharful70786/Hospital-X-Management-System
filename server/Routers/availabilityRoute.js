@@ -10,7 +10,7 @@ import {
 
 const router = express.Router();
 
-router.get("/:id", checkAuth, allow(role.Doctor), getDoctorAvailability);
+router.get("/:id", checkAuth, allow(role.Doctor , role.Receptionist), getDoctorAvailability);
 router.post("/", checkAuth, allow(role.Doctor), createOrUpdateAvailability);
 router.delete("/:id", checkAuth, allow(role.Doctor), deleteAvailability);
 
